@@ -2,104 +2,157 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>وصّلني - تسجيل سائق</title>
+  <title>وصّلني - لوحة السائق</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f8;
       min-height: 100vh;
+    }
+    header {
       background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 22px; font-weight: 800; }
+    header button {
+      color: white;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .login-screen {
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      padding: 20px;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
     }
-    .card {
+    .login-card {
       background: white;
       border-radius: 20px;
       padding: 40px;
       width: 100%;
-      max-width: 480px;
+      max-width: 400px;
+      text-align: center;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-    .logo { text-align: center; margin-bottom: 30px; }
-    .logo h1 { font-size: 28px; color: #1a1a2e; font-weight: 800; }
-    .logo p { color: #888; font-size: 14px; margin-top: 4px; }
-    .input-group { position: relative; margin-bottom: 16px; }
-    .input-group span {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 18px;
-    }
-    .input-group input {
+    .login-card h2 { color: #1a1a2e; font-size: 26px; margin-bottom: 10px; }
+    .login-card p { color: #888; margin-bottom: 24px; }
+    .login-card input {
       width: 100%;
-      padding: 14px 44px 14px 14px;
+      padding: 14px;
       border: 2px solid #e0e0e0;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 16px;
+      margin-bottom: 16px;
       outline: none;
-      color: #333;
-      text-align: right;
+      text-align: center;
     }
-    .input-group input:focus { border-color: #1a1a2e; }
-    .input-group input::placeholder { color: #aaa; }
-    button {
+    .login-card input:focus { border-color: #1a1a2e; }
+    .login-card button {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       background: linear-gradient(135deg, #1a1a2e, #16213e);
       color: white;
       border: none;
       border-radius: 10px;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 8px;
     }
-    button:hover { opacity: 0.88; }
-    #msg { text-align: center; margin-top: 16px; font-size: 15px; font-weight: bold; min-height: 24px; }
-    .back-link { text-align: center; margin-top: 20px; }
-    .back-link a { color: #1a1a2e; text-decoration: none; font-size: 14px; font-weight: bold; }
-    .back-link a:hover { text-decoration: underline; }
+    #login-error { color: red; margin-top: 12px; font-size: 14px; }
+    .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+    .page-title { color: #333; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
+    .ride-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border-right: 5px solid #0A7C5C;
+    }
+    .ride-card h3 { color: #1a1a2e; font-size: 18px; margin-bottom: 12px; }
+    .ride-info { color: #555; font-size: 15px; margin-bottom: 8px; }
+    .ride-info span { font-weight: bold; color: #333; }
+    .btn-group { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-call {
+      flex: 1;
+      padding: 12px;
+      background: #0A7C5C;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+    .btn-accept {
+      flex: 1;
+      padding: 12px;
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-call:hover { opacity: 0.9; }
+    .btn-accept:hover { opacity: 0.9; }
+    .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
+    .badge-accepted {
+      display: inline-block;
+      padding: 4px 14px;
+      background: #d4edda;
+      color: #155724;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="logo">
-      <h1>🚙 تسجيل سائق</h1>
-      <p>سجّل سيارتك مع وصّلني</p>
+
+  <!-- شاشة تسجيل الدخول -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <h2>🚙 لوحة السائق</h2>
+      <p>أدخل رقم هاتفك للدخول</p>
+      <input type="tel" id="phoneInput" placeholder="رقم الهاتف">
+      <button onclick="checkDriver()">دخول</button>
+      <p id="login-error"></p>
     </div>
-    <div class="input-group">
-      <span>👤</span>
-      <input id="name" type="text" placeholder="الاسم الكامل">
-    </div>
-    <div class="input-group">
-      <span>📞</span>
-      <input id="phone" type="tel" placeholder="رقم الهاتف">
-    </div>
-    <div class="input-group">
-      <span>🚗</span>
-      <input id="car_model" type="text" placeholder="نوع السيارة (مثال: تويوتا كورولا)">
-    </div>
-    <div class="input-group">
-      <span>🔢</span>
-      <input id="plate" type="text" placeholder="رقم اللوحة">
-    </div>
-    <div class="input-group">
-      <span>📍</span>
-      <input id="area" type="text" placeholder="منطقتك / حيّك">
-    </div>
-    <button onclick="registerDriver()">تسجيل الآن 🚀</button>
-    <p id="msg"></p>
-    <div class="back-link">
-      <a href="WASSALNI.html">← العودة لصفحة الطلب</a>
+  </div>
+
+  <!-- لوحة السائق -->
+  <div id="driverDashboard" style="display:none;">
+    <header>
+      <h1>🚙 وصّلني - لوحة السائق</h1>
+      <button onclick="logout()">خروج 🚪</button>
+    </header>
+
+    <div class="container">
+      <p class="page-title">📋 الطلبات المتاحة</p>
+      <div id="ridesList">
+        <div class="empty">جارٍ التحميل...</div>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -113,37 +166,73 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    window.registerDriver = async function() {
-      const name = document.getElementById("name").value;
-      const phone = document.getElementById("phone").value;
-      const car_model = document.getElementById("car_model").value;
-      const plate = document.getElementById("plate").value;
-      const area = document.getElementById("area").value;
-      const msg = document.getElementById("msg");
+    let currentDriverPhone = "";
 
-      if (!name || !phone || !car_model || !plate || !area) {
-        msg.style.color = "red";
-        msg.innerText = "الرجاء ملء جميع الحقول.";
+    window.checkDriver = async function() {
+      const phone = document.getElementById("phoneInput").value.trim();
+      if (!phone) {
+        document.getElementById("login-error").innerText = "أدخل رقم هاتفك!";
         return;
       }
 
-      try {
-        await addDoc(collection(db, "drivers"), {
-          name, phone, car_model, plate, area,
-          status: "available",
-          registeredAt: new Date().toISOString()
-        });
-        msg.style.color = "green";
-        msg.innerText = "تم التسجيل بنجاح! مرحباً بك في وصّلني. ✅";
-        document.getElementById("name").value = "";
-        document.getElementById("phone").value = "";
-        document.getElementById("car_model").value = "";
-        document.getElementById("plate").value = "";
-        document.getElementById("area").value = "";
-      } catch (error) {
-        msg.style.color = "red";
-        msg.innerText = "حدث خطأ، حاول مرة أخرى.";
+      const q = query(collection(db, "drivers"), where("phone", "==", phone));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        document.getElementById("login-error").innerText = "❌ رقم الهاتف غير مسجل!";
+        return;
       }
+
+      currentDriverPhone = phone;
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("driverDashboard").style.display = "block";
+      loadRides();
+    }
+
+    window.logout = function() {
+      document.getElementById("driverDashboard").style.display = "none";
+      document.getElementById("loginScreen").style.display = "flex";
+      document.getElementById("phoneInput").value = "";
+    }
+
+    async function loadRides() {
+      const q = query(collection(db, "rides"), where("status", "==", "pending"));
+      const snap = await getDocs(q);
+      const list = document.getElementById("ridesList");
+
+      if (snap.empty) {
+        list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
+        return;
+      }
+
+      list.innerHTML = "";
+      snap.forEach(docSnap => {
+        const r = docSnap.data();
+        const id = docSnap.id;
+        list.innerHTML += `
+          <div class="ride-card" id="card-${id}">
+            <h3>👤 ${r.name}</h3>
+            <div class="ride-info">📍 من: <span>${r.from}</span></div>
+            <div class="ride-info">🏥 إلى: <span>${r.to}</span></div>
+            <div class="ride-info">📞 الهاتف: <span>${r.phone}</span></div>
+            <div class="btn-group">
+              <a class="btn-call" href="tel:${r.phone}">📞 اتصال بالمريض</a>
+              <button class="btn-accept" onclick="acceptRide('${id}')">✅ قبول الطلب</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    window.acceptRide = async function(rideId) {
+      const rideRef = doc(db, "rides", rideId);
+      await updateDoc(rideRef, {
+        status: "accepted",
+        driver_phone: currentDriverPhone
+      });
+      const card = document.getElementById("card-" + rideId);
+      card.innerHTML += '<div class="badge-accepted">✅ تم قبول الطلب!</div>';
+      card.querySelector(".btn-group").style.display = "none";
     }
   </script>
 </body>
