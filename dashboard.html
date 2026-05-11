@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>وصّلني - لوحة التحكم</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0A7C5C, #0d9e76);
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    header a:hover { background: rgba(255,255,255,0.35); }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 14px;
+      padding: 24px 32px;
+      flex: 1;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+      border-right: 5px solid #0A7C5C;
+    }
+
+    .stat-card .number {
+      font-size: 42px;
+      font-weight: 800;
+      color: #0A7C5C;
+    }
+
+    .stat-card .label {
+      color: #888;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .toolbar h2 {
+      color: #333;
+      font-size: 20px;
+    }
+
+    .toolbar button {
+      padding: 10px 22px;
+      background: #0A7C5C;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .toolbar button:hover { opacity: 0.85; }
+
+    .table-wrapper {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #0A7C5C;
+      color: white;
+    }
+
+    thead th {
+      padding: 16px 18px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.2s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f8fffe; }
+
+    tbody td {
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #444;
+      text-align: right;
+    }
+
+    .badge {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px;
+      color: #bbb;
+      font-size: 16px;
+    }
+
+    .refresh-time {
+      text-align: left;
+      color: #bbb;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🚗 لوحة تحكم وصّلني</h1>
+    <a href="WASSALNI.html">+ طلب جديد</a>
+  </header>
+
+  <div class="container">
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="number" id="total">0</div>
+        <div class="label">إجمالي الطلبات</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="pending">0</div>
+        <div class="label">السائقون المسجلون</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <h2>جميع الطلبات</h2>
+      <button onclick="loadRides()">🔄 تحديث</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>الهاتف</th>
+            <th>من</th>
+            <th>إلى</th>
+            <th>الحالة</th>
+            <th>الوقت</th>
+          </tr>
+        </thead>
+        <tbody id="rides-table">
+          <tr><td colspan="7" class="empty">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="refresh-time" id="last-refresh"></p>
+
+    <div class="toolbar" style="margin-top:40px;">
+      <h2>السائقون المسجلون</h2>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>الهاتف</th>
+            <th>نوع السيارة</th>
+            <th>رقم اللوحة</th>
+            <th>المنطقة</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody id="drivers-table">
+          <tr><td colspan="7" class="empty">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    async function loadRides() {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/rides");
+        const rides = await response.json();
+
+        document.getElementById("total").innerText = rides.length;
+
+        const tbody = document.getElementById("rides-table");
+
+        if (rides.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty">لا توجد طلبات بعد.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = "";
+        rides.forEach((ride, index) => {
+          const time = new Date(ride.created_at).toLocaleTimeString("ar");
+          tbody.innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${ride.name}</td>
+              <td>${ride.phone}</td>
+              <td>${ride.from}</td>
+              <td>${ride.to}</td>
+              <td><span class="badge">قيد الانتظار</span></td>
+              <td>${time}</td>
+            </tr>
+          `;
+        });
+
+        document.getElementById("last-refresh").innerText =
+          "آخر تحديث: " + new Date().toLocaleTimeString("ar");
+
+      } catch (error) {
+        document.getElementById("rides-table").innerHTML =
+          '<tr><td colspan="7" class="empty">تعذر الاتصال بالسيرفر. تأكد من تشغيل app.py</td></tr>';
+      }
+    }
+
+    async function loadDrivers() {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/drivers");
+        const drivers = await response.json();
+
+        document.getElementById("pending").innerText = drivers.length;
+
+        const tbody = document.getElementById("drivers-table");
+
+        if (drivers.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty">لا يوجد سائقون مسجلون بعد.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = "";
+        drivers.forEach((driver, index) => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${driver.name}</td>
+              <td>${driver.phone}</td>
+              <td>${driver.car_model}</td>
+              <td>${driver.plate}</td>
+              <td>${driver.area}</td>
+              <td><span class="badge" style="background:#d4edda;color:#155724;">متاح</span></td>
+            </tr>
+          `;
+        });
+
+      } catch (error) {
+        document.getElementById("drivers-table").innerHTML =
+          '<tr><td colspan="7" class="empty">تعذر الاتصال بالسيرفر.</td></tr>';
+      }
+    }
+
+    loadRides();
+    loadDrivers();
+    setInterval(loadRides, 10000);
+    setInterval(loadDrivers, 10000);
+  </script>
+
+</body>
+</html>

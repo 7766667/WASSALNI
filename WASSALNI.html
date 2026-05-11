@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>وصّلني - طلب توصيلة</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0A7C5C, #0d9e76);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo h1 {
+      font-size: 32px;
+      color: #0A7C5C;
+      font-weight: 800;
+    }
+
+    .logo p {
+      color: #888;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .input-group span {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px 44px 14px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: border 0.3s;
+      outline: none;
+      color: #333;
+      text-align: right;
+    }
+
+    .input-group input:focus {
+      border-color: #0A7C5C;
+    }
+
+    .input-group input::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #0A7C5C, #0d9e76);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.3s, transform 0.1s;
+    }
+
+    button:hover { opacity: 0.92; }
+    button:active { transform: scale(0.98); }
+
+    #msg {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 15px;
+      font-weight: bold;
+      min-height: 24px;
+    }
+
+    .dashboard-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .dashboard-link a {
+      color: #0A7C5C;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .dashboard-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">
+      <h1>🚗 وصّلني</h1>
+      <p>خدمة النقل الطبي في موريتانيا</p>
+    </div>
+
+    <div class="input-group">
+      <span>👤</span>
+      <input id="name" type="text" placeholder="الاسم الكامل">
+    </div>
+
+    <div class="input-group">
+      <span>📞</span>
+      <input id="phone" type="tel" placeholder="رقم الهاتف">
+    </div>
+
+    <div class="input-group">
+      <span>📍</span>
+      <input id="from" type="text" placeholder="موقع الانطلاق">
+    </div>
+
+    <div class="input-group">
+      <span>🏥</span>
+      <input id="to" type="text" placeholder="الوجهة (المستشفى)">
+    </div>
+
+    <button onclick="sendRide()">إرسال الطلب 🚀</button>
+
+    <p id="msg"></p>
+
+    <div class="dashboard-link">
+      <a href="dashboard.html">← عرض لوحة التحكم</a>
+    </div>
+  </div>
+
+  <script>
+    async function sendRide() {
+      const rideData = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        from: document.getElementById("from").value,
+        to: document.getElementById("to").value
+      };
+
+      if (!rideData.name || !rideData.phone || !rideData.from || !rideData.to) {
+        document.getElementById("msg").style.color = "red";
+        document.getElementById("msg").innerText = "الرجاء ملء جميع الحقول.";
+        return;
+      }
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/request-ride", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(rideData)
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        document.getElementById("msg").style.color = "#0A7C5C";
+        document.getElementById("msg").innerText = "تم إرسال الطلب بنجاح!";
+
+        document.getElementById("name").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("from").value = "";
+        document.getElementById("to").value = "";
+
+      } catch (error) {
+        console.error(error);
+        document.getElementById("msg").style.color = "red";
+        document.getElementById("msg").innerText = "خطأ. تأكد من تشغيل السيرفر.";
+      }
+    }
+  </script>
+
+</body>
+</html>
