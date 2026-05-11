@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>وصّلني - لوحة السائق</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; }
+    header {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 22px; font-weight: 800; }
+    header button {
+      color: white;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+    }
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .login-card h2 { color: #1a1a2e; font-size: 26px; margin-bottom: 10px; }
+    .login-card p { color: #888; margin-bottom: 24px; }
+    .login-card input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 16px;
+      outline: none;
+      text-align: center;
+    }
+    .login-card button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #login-error { color: red; margin-top: 12px; font-size: 14px; }
+    .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+    .page-title { color: #333; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
+    .notif-banner {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+    .ride-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border-right: 5px solid #0A7C5C;
+    }
+    .ride-card h3 { color: #1a1a2e; font-size: 18px; margin-bottom: 12px; }
+    .ride-info { color: #555; font-size: 15px; margin-bottom: 8px; }
+    .ride-info span { font-weight: bold; color: #333; }
+    .btn-group { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-call {
+      flex: 1;
+      padding: 12px;
+      background: #0A7C5C;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+    .btn-accept {
+      flex: 1;
+      padding: 12px;
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
+    .badge-accepted {
+      display: inline-block;
+      padding: 4px 14px;
+      background: #d4edda;
+      color: #155724;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <h2>🚙 لوحة السائق</h2>
+      <p>أدخل رقم هاتفك للدخول</p>
+      <input type="tel" id="phoneInput" placeholder="رقم الهاتف">
+      <button onclick="checkDriver()">دخول</button>
+      <p id="login-error"></p>
+    </div>
+  </div>
+
+  <div id="driverDashboard" style="display:none;">
+    <header>
+      <h1>🚙 وصّلني - لوحة السائق</h1>
+      <button onclick="logout()">خروج 🚪</button>
+    </header>
+    <div class="container">
+      <div class="notif-banner" id="notifBanner">
+        ✅ تم تفعيل الإشعارات! ستصلك إشعارات عند وجود طلبات جديدة.
+      </div>
+      <p class="page-title">📋 الطلبات المتاحة</p>
+      <div id="ridesList">
+        <div class="empty">جارٍ التحميل...</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
+      authDomain: "wassalni-fa958.firebaseapp.com",
+      projectId: "wassalni-fa958",
+      storageBucket: "wassalni-fa958.firebasestorage.app",
+      messagingSenderId: "63888443959",
+      appId: "1:63888443959:web:3a28bf29c34c1f951d0db2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const messaging = getMessaging(app);
+    const VAPID_KEY = "BMD41or6VjONVkwTJjjrtCZE3o2GlDePPmxiC3D-wYqBW16Rc4lNrTKM_tNhTUn4_Gj9WiALD_hqZEA66EvPnvM";
+
+    let currentDriverPhone = "";
+
+    async function enableNotifications() {
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+          console.log("FCM Token:", token);
+          document.getElementById("notifBanner").style.display = "block";
+        }
+      } catch (error) {
+        console.log("خطأ في الإشعارات:", error);
+      }
+    }
+
+    onMessage(messaging, (payload) => {
+      const title = payload.notification?.title || "طلب جديد! 🚗";
+      const body = payload.notification?.body || "يوجد مريض يحتاج توصيلة!";
+      new Notification(title, { body });
+      loadRides();
+    });
+
+    window.checkDriver = async function() {
+      const phone = document.getElementById("phoneInput").value.trim();
+      if (!phone) {
+        document.getElementById("login-error").innerText = "أدخل رقم هاتفك!";
+        return;
+      }
+      const q = query(collection(db, "drivers"), where("phone", "==", phone));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        document.getElementById("login-error").innerText = "❌ رقم الهاتف غير مسجل!";
+        return;
+      }
+      currentDriverPhone = phone;
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("driverDashboard").style.display = "block";
+      enableNotifications();
+      loadRides();
+      setInterval(loadRides, 30000);
+    }
+
+    window.logout = function() {
+      document.getElementById("driverDashboard").style.display = "none";
+      document.getElementById("loginScreen").style.display = "flex";
+      document.getElementById("phoneInput").value = "";
+    }
+
+    async function loadRides() {
+      const q = query(collection(db, "rides"), where("status", "==", "pending"));
+      const snap = await getDocs(q);
+      const list = document.getElementById("ridesList");
+      if (snap.empty) {
+        list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
+        return;
+      }
+      list.innerHTML = "";
+      snap.forEach(docSnap => {
+        const r = docSnap.data();
+        const id = docSnap.id;
+        list.innerHTML += `
+          <div class="ride-card" id="card-${id}">
+            <h3>👤 ${r.name}</h3>
+            <div class="ride-info">📍 من: <span>${r.from}</span></div>
+            <div class="ride-info">🏥 إلى: <span>${r.to}</span></div>
+            <div class="ride-info">📞 الهاتف: <span>${r.phone}</span></div>
+            <div class="btn-group">
+              <a class="btn-call" href="tel:${r.phone}">📞 اتصال بالمريض</a>
+              <button class="btn-accept" onclick="acceptRide('${id}')">✅ قبول الطلب</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    window.acceptRide = async function(rideId) {
+      const rideRef = doc(db, "rides", rideId);
+      await updateDoc(rideRef, { status: "accepted", driver_phone: currentDriverPhone });
+      const card = document.getElementById("card-" + rideId);
+      card.innerHTML += '<div class="badge-accepted">✅ تم قبول الطلب!</div>';
+      card.querySelector(".btn-group").style.display = "none";
+    }
+  </script>
+</body>
+</html>
