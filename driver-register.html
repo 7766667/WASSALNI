@@ -5,7 +5,6 @@
   <title>وصّلني - تسجيل سائق</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       min-height: 100vh;
       background: linear-gradient(135deg, #1a1a2e, #16213e);
@@ -15,7 +14,6 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       padding: 20px;
     }
-
     .card {
       background: white;
       border-radius: 20px;
@@ -24,29 +22,10 @@
       max-width: 480px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-
-    .logo {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .logo h1 {
-      font-size: 28px;
-      color: #1a1a2e;
-      font-weight: 800;
-    }
-
-    .logo p {
-      color: #888;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .input-group {
-      position: relative;
-      margin-bottom: 16px;
-    }
-
+    .logo { text-align: center; margin-bottom: 30px; }
+    .logo h1 { font-size: 28px; color: #1a1a2e; font-weight: 800; }
+    .logo p { color: #888; font-size: 14px; margin-top: 4px; }
+    .input-group { position: relative; margin-bottom: 16px; }
     .input-group span {
       position: absolute;
       right: 14px;
@@ -54,28 +33,18 @@
       transform: translateY(-50%);
       font-size: 18px;
     }
-
     .input-group input {
       width: 100%;
       padding: 14px 44px 14px 14px;
       border: 2px solid #e0e0e0;
       border-radius: 10px;
       font-size: 15px;
-      transition: border 0.3s;
       outline: none;
       color: #333;
-      background: white;
       text-align: right;
     }
-
-    .input-group input:focus {
-      border-color: #1a1a2e;
-    }
-
-    .input-group input::placeholder {
-      color: #aaa;
-    }
-
+    .input-group input:focus { border-color: #1a1a2e; }
+    .input-group input::placeholder { color: #aaa; }
     button {
       width: 100%;
       padding: 15px;
@@ -87,119 +56,95 @@
       font-weight: bold;
       cursor: pointer;
       margin-top: 8px;
-      transition: opacity 0.3s, transform 0.1s;
     }
-
     button:hover { opacity: 0.88; }
-    button:active { transform: scale(0.98); }
-
-    #msg {
-      text-align: center;
-      margin-top: 16px;
-      font-size: 15px;
-      font-weight: bold;
-      min-height: 24px;
-    }
-
-    .back-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .back-link a {
-      color: #1a1a2e;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
+    #msg { text-align: center; margin-top: 16px; font-size: 15px; font-weight: bold; min-height: 24px; }
+    .back-link { text-align: center; margin-top: 20px; }
+    .back-link a { color: #1a1a2e; text-decoration: none; font-size: 14px; font-weight: bold; }
     .back-link a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-
   <div class="card">
     <div class="logo">
       <h1>🚙 تسجيل سائق</h1>
       <p>سجّل سيارتك مع وصّلني</p>
     </div>
-
     <div class="input-group">
       <span>👤</span>
       <input id="name" type="text" placeholder="الاسم الكامل">
     </div>
-
     <div class="input-group">
       <span>📞</span>
       <input id="phone" type="tel" placeholder="رقم الهاتف">
     </div>
-
     <div class="input-group">
       <span>🚗</span>
       <input id="car_model" type="text" placeholder="نوع السيارة (مثال: تويوتا كورولا)">
     </div>
-
     <div class="input-group">
       <span>🔢</span>
       <input id="plate" type="text" placeholder="رقم اللوحة">
     </div>
-
     <div class="input-group">
       <span>📍</span>
       <input id="area" type="text" placeholder="منطقتك / حيّك">
     </div>
-
     <button onclick="registerDriver()">تسجيل الآن 🚀</button>
-
     <p id="msg"></p>
-
     <div class="back-link">
       <a href="WASSALNI.html">← العودة لصفحة الطلب</a>
     </div>
   </div>
 
-  <script>
-    async function registerDriver() {
-      const driverData = {
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        car_model: document.getElementById("car_model").value,
-        plate: document.getElementById("plate").value,
-        area: document.getElementById("area").value
-      };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-      if (!driverData.name || !driverData.phone || !driverData.car_model || !driverData.plate || !driverData.area) {
-        document.getElementById("msg").style.color = "red";
-        document.getElementById("msg").innerText = "الرجاء ملء جميع الحقول.";
+    const firebaseConfig = {
+      apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
+      authDomain: "wassalni-fa958.firebaseapp.com",
+      projectId: "wassalni-fa958",
+      storageBucket: "wassalni-fa958.firebasestorage.app",
+      messagingSenderId: "63888443959",
+      appId: "1:63888443959:web:3a28bf29c34c1f951d0db2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.registerDriver = async function() {
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const car_model = document.getElementById("car_model").value;
+      const plate = document.getElementById("plate").value;
+      const area = document.getElementById("area").value;
+      const msg = document.getElementById("msg");
+
+      if (!name || !phone || !car_model || !plate || !area) {
+        msg.style.color = "red";
+        msg.innerText = "الرجاء ملء جميع الحقول.";
         return;
       }
 
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/register-driver", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(driverData)
+        await addDoc(collection(db, "drivers"), {
+          name, phone, car_model, plate, area,
+          status: "available",
+          registeredAt: new Date().toISOString()
         });
-
-        const data = await response.json();
-        console.log(data);
-
-        document.getElementById("msg").style.color = "green";
-        document.getElementById("msg").innerText = "تم التسجيل بنجاح! مرحباً بك في وصّلني.";
-
+        msg.style.color = "green";
+        msg.innerText = "تم التسجيل بنجاح! مرحباً بك في وصّلني. ✅";
         document.getElementById("name").value = "";
         document.getElementById("phone").value = "";
         document.getElementById("car_model").value = "";
         document.getElementById("plate").value = "";
         document.getElementById("area").value = "";
-
       } catch (error) {
-        console.error(error);
-        document.getElementById("msg").style.color = "red";
-        document.getElementById("msg").innerText = "خطأ. تأكد من تشغيل السيرفر.";
+        msg.style.color = "red";
+        msg.innerText = "حدث خطأ، حاول مرة أخرى.";
       }
     }
   </script>
-
 </body>
 </html>
