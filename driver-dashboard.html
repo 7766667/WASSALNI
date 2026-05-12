@@ -1,226 +1,110 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>وصّلني - لوحة السائق</title>
+  <title>وصّلني - تسجيل سائق</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; }
-    header {
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      color: white;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 { font-size: 22px; font-weight: 800; }
-    header button {
-      color: white;
-      background: rgba(255,255,255,0.2);
-      border: none;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .live-badge {
-      display: inline-block;
-      background: #00c853;
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
-      padding: 4px 10px;
-      border-radius: 20px;
-      margin-right: 10px;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    .login-screen {
+    body {
       min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
     }
-    .login-card {
+    .card {
       background: white;
       border-radius: 20px;
       padding: 40px;
       width: 100%;
-      max-width: 400px;
-      text-align: center;
+      max-width: 480px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-    .login-card h2 { color: #1a1a2e; font-size: 26px; margin-bottom: 10px; }
-    .login-card p { color: #888; margin-bottom: 24px; }
-    .login-card input {
+    .logo { text-align: center; margin-bottom: 30px; }
+    .logo h1 { font-size: 28px; color: #1a1a2e; font-weight: 800; }
+    .logo p { color: #888; font-size: 14px; margin-top: 4px; }
+    .input-group { position: relative; margin-bottom: 16px; }
+    .input-group span {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+    }
+    .input-group input {
       width: 100%;
-      padding: 14px;
+      padding: 14px 44px 14px 14px;
       border: 2px solid #e0e0e0;
       border-radius: 10px;
-      font-size: 16px;
-      margin-bottom: 16px;
+      font-size: 15px;
       outline: none;
-      text-align: center;
+      color: #333;
+      text-align: right;
     }
-    .login-card input:focus { border-color: #1a1a2e; }
-    .login-card button {
+    .input-group input:focus { border-color: #1a1a2e; }
+    .input-group input::placeholder { color: #aaa; }
+    button {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       background: linear-gradient(135deg, #1a1a2e, #16213e);
       color: white;
       border: none;
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 8px;
     }
-    #login-error { color: red; margin-top: 12px; font-size: 14px; }
-    .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
-    .page-title { color: #333; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
-    .ride-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      border-right: 5px solid #0A7C5C;
-      animation: slideIn 0.3s ease;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .ride-card h3 { color: #1a1a2e; font-size: 18px; margin-bottom: 12px; }
-    .ride-info { color: #555; font-size: 15px; margin-bottom: 8px; }
-    .ride-info span { font-weight: bold; color: #333; }
-    .btn-group { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
-    .btn-call {
-      flex: 1;
-      padding: 12px;
-      background: #0A7C5C;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-    }
-    .btn-map {
-      flex: 1;
-      padding: 12px;
-      background: #e8f5f0;
-      color: #0A7C5C;
-      border: 2px solid #0A7C5C;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-    }
-    .btn-map:hover { background: #0A7C5C; color: white; }
-    .btn-accept {
-      flex: 1;
-      padding: 12px;
-      background: #1a1a2e;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .btn-onway {
-      flex: 1;
-      padding: 12px;
-      background: #f57c00;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .btn-arrived {
-      flex: 1;
-      padding: 12px;
-      background: #2e7d32;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .ride-map {
-      width: 100%;
-      height: 200px;
-      border-radius: 10px;
-      margin-top: 12px;
-      border: 2px solid #e0e0e0;
-    }
-    .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
-
-    /* شريط الحالة */
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 16px;
-      padding: 12px;
-      background: #f8f9fa;
-      border-radius: 10px;
-      font-size: 13px;
-    }
-    .status-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-      color: #bbb;
-    }
-    .status-step.active { color: #0A7C5C; font-weight: bold; }
-    .status-step.done { color: #0A7C5C; }
-    .status-icon { font-size: 20px; margin-bottom: 4px; }
-    .status-line { flex: 1; height: 2px; background: #e0e0e0; margin-bottom: 16px; }
-    .status-line.done { background: #0A7C5C; }
+    button:hover { opacity: 0.88; }
+    #msg { text-align: center; margin-top: 16px; font-size: 15px; font-weight: bold; min-height: 24px; }
+    .back-link { text-align: center; margin-top: 20px; }
+    .back-link a { color: #1a1a2e; text-decoration: none; font-size: 14px; font-weight: bold; }
+    .back-link a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-
-  <div class="login-screen" id="loginScreen">
-    <div class="login-card">
-      <h2>🚙 لوحة السائق</h2>
-      <p>أدخل رقم هاتفك للدخول</p>
-      <input type="tel" id="phoneInput" placeholder="رقم الهاتف">
-      <button onclick="checkDriver()">دخول</button>
-      <p id="login-error"></p>
+  <div class="card">
+    <div class="logo">
+      <h1>🚙 تسجيل سائق</h1>
+      <p>سجّل سيارتك مع وصّلني</p>
     </div>
-  </div>
-
-  <div id="driverDashboard" style="display:none;">
-    <header>
-      <h1>🚙 وصّلني - لوحة السائق <span class="live-badge">🔴 مباشر</span></h1>
-      <button onclick="logout()">خروج 🚪</button>
-    </header>
-    <div class="container">
-      <p class="page-title">📋 الطلبات المتاحة</p>
-      <div id="ridesList">
-        <div class="empty">جارٍ التحميل...</div>
-      </div>
+    <div class="input-group">
+      <span>👤</span>
+      <input id="name" type="text" placeholder="الاسم الكامل">
+    </div>
+    <div class="input-group">
+      <span>📞</span>
+      <input id="phone" type="tel" placeholder="رقم الهاتف">
+    </div>
+    <div class="input-group">
+      <span>🔑</span>
+      <input id="password" type="password" placeholder="كلمة المرور">
+    </div>
+    <div class="input-group">
+      <span>🚗</span>
+      <input id="car_model" type="text" placeholder="نوع السيارة (مثال: تويوتا كورولا)">
+    </div>
+    <div class="input-group">
+      <span>🔢</span>
+      <input id="plate" type="text" placeholder="رقم اللوحة">
+    </div>
+    <div class="input-group">
+      <span>📍</span>
+      <input id="area" type="text" placeholder="منطقتك / حيّك">
+    </div>
+    <button onclick="registerDriver()">تسجيل الآن 🚀</button>
+    <p id="msg"></p>
+    <div class="back-link">
+      <a href="index.html">← العودة لصفحة الطلب</a>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -234,145 +118,48 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let currentDriverPhone = "";
-    let unsubscribe = null;
+    window.registerDriver = async function() {
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const password = document.getElementById("password").value;
+      const car_model = document.getElementById("car_model").value;
+      const plate = document.getElementById("plate").value;
+      const area = document.getElementById("area").value;
+      const msg = document.getElementById("msg");
 
-    const savedPhone = localStorage.getItem("driver_phone");
-    if (savedPhone) {
-      currentDriverPhone = savedPhone;
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("driverDashboard").style.display = "block";
-      startLiveRides();
-    }
-
-    window.checkDriver = async function() {
-      const phone = document.getElementById("phoneInput").value.trim();
-      if (!phone) {
-        document.getElementById("login-error").innerText = "أدخل رقم هاتفك!";
+      if (!name || !phone || !password || !car_model || !plate || !area) {
+        msg.style.color = "red";
+        msg.innerText = "الرجاء ملء جميع الحقول.";
         return;
       }
-      const q = query(collection(db, "drivers"), where("phone", "==", phone));
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        document.getElementById("login-error").innerText = "❌ رقم الهاتف غير مسجل!";
+
+      if (password.length < 4) {
+        msg.style.color = "red";
+        msg.innerText = "كلمة المرور يجب أن تكون 4 أحرف على الأقل.";
         return;
       }
-      currentDriverPhone = phone;
-      localStorage.setItem("driver_phone", phone);
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("driverDashboard").style.display = "block";
-      startLiveRides();
-    }
 
-    window.logout = function() {
-      if (unsubscribe) unsubscribe();
-      localStorage.removeItem("driver_phone");
-      localStorage.removeItem("driver_name");
-      document.getElementById("driverDashboard").style.display = "none";
-      document.getElementById("loginScreen").style.display = "flex";
-      document.getElementById("phoneInput").value = "";
-    }
-
-    function statusBar(status) {
-      const steps = ["pending", "accepted", "on_the_way", "arrived"];
-      const labels = ["⏳ انتظار", "✅ مقبول", "🚗 في الطريق", "🏥 وصل"];
-      let html = '<div class="status-bar">';
-      steps.forEach((s, i) => {
-        const isDone = steps.indexOf(status) > i;
-        const isActive = status === s;
-        html += `<div class="status-step ${isActive ? "active" : ""} ${isDone ? "done" : ""}">
-          <div class="status-icon">${labels[i]}</div>
-        </div>`;
-        if (i < steps.length - 1) {
-          html += `<div class="status-line ${isDone ? "done" : ""}"></div>`;
-        }
-      });
-      html += '</div>';
-      return html;
-    }
-
-    function rideButtons(id, status) {
-      if (status === "pending") {
-        return `
-          <div class="btn-group" id="btns-${id}">
-            <a class="btn-call" href="tel:{phone}">📞 اتصال</a>
-            <a class="btn-map" href="{mapUrl}" target="_blank">🗺️ موقع المريض</a>
-            <button class="btn-accept" onclick="updateStatus('${id}', 'accepted')">✅ قبول</button>
-          </div>`;
-      } else if (status === "accepted") {
-        return `
-          <div class="btn-group" id="btns-${id}">
-            <a class="btn-call" href="tel:{phone}">📞 اتصال</a>
-            <a class="btn-map" href="{mapUrl}" target="_blank">🗺️ موقع المريض</a>
-            <button class="btn-onway" onclick="updateStatus('${id}', 'on_the_way')">🚗 في الطريق</button>
-          </div>`;
-      } else if (status === "on_the_way") {
-        return `
-          <div class="btn-group" id="btns-${id}">
-            <a class="btn-call" href="tel:{phone}">📞 اتصال</a>
-            <button class="btn-arrived" onclick="updateStatus('${id}', 'arrived')">🏥 وصلت للمريض</button>
-          </div>`;
-      } else {
-        return `<div class="btn-group"><span style="color:#2e7d32;font-weight:bold;">✅ تمت الرحلة بنجاح!</span></div>`;
-      }
-    }
-
-    function startLiveRides() {
-      // نستمع للطلبات التي قبلها هذا السائق أو لم تُقبل بعد
-      const q = query(collection(db, "rides"), where("status", "in", ["pending", "accepted", "on_the_way"]));
-
-      unsubscribe = onSnapshot(q, (snap) => {
-        const list = document.getElementById("ridesList");
-        if (snap.empty) {
-          list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
-          return;
-        }
-
-        list.innerHTML = "";
-        snap.forEach(docSnap => {
-          const r = docSnap.data();
-          const id = docSnap.id;
-          const status = r.status || "pending";
-
-          // السائق يرى الطلبات المعلقة + طلباته هو فقط
-          if (status !== "pending" && r.driver_phone !== currentDriverPhone) return;
-
-          const hasLocation = r.lat && r.lng;
-          const mapUrl = hasLocation
-            ? `https://maps.google.com/?q=${r.lat},${r.lng}`
-            : `https://maps.google.com/?q=${encodeURIComponent(r.from)}`;
-
-          let btns = rideButtons(id, status)
-            .replace("{phone}", r.phone)
-            .replace("{phone}", r.phone)
-            .replace("{mapUrl}", mapUrl)
-            .replace("{mapUrl}", mapUrl);
-
-          list.innerHTML += `
-            <div class="ride-card" id="card-${id}">
-              <h3>👤 ${r.name}</h3>
-              <div class="ride-info">📍 من: <span>${r.from}</span></div>
-              <div class="ride-info">🏥 إلى: <span>${r.to}</span></div>
-              <div class="ride-info">📞 الهاتف: <span>${r.phone}</span></div>
-              ${statusBar(status)}
-              ${hasLocation ? `<iframe class="ride-map" src="https://maps.google.com/maps?q=${r.lat},${r.lng}&z=15&output=embed" frameborder="0" allowfullscreen></iframe>` : ""}
-              ${btns}
-            </div>
-          `;
+      try {
+        await addDoc(collection(db, "drivers"), {
+          name, phone, password, car_model, plate, area,
+          status: "available",
+          registeredAt: new Date().toISOString()
         });
 
-        if (list.innerHTML === "") {
-          list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
-        }
-      });
-    }
+        msg.style.color = "green";
+        msg.innerText = "تم التسجيل بنجاح! جارٍ نقلك للطلبات...";
 
-    window.updateStatus = async function(rideId, newStatus) {
-      const rideRef = doc(db, "rides", rideId);
-      await updateDoc(rideRef, {
-        status: newStatus,
-        driver_phone: currentDriverPhone
-      });
+        localStorage.setItem("driver_phone", phone);
+        localStorage.setItem("driver_name", name);
+
+        setTimeout(() => {
+          window.location.href = "driver-dashboard.html";
+        }, 1500);
+
+      } catch (error) {
+        msg.style.color = "red";
+        msg.innerText = "حدث خطأ، حاول مرة أخرى.";
+      }
     }
   </script>
 </body>
