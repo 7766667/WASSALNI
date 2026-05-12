@@ -78,7 +78,7 @@
     .ride-card h3 { color: #1a1a2e; font-size: 18px; margin-bottom: 12px; }
     .ride-info { color: #555; font-size: 15px; margin-bottom: 8px; }
     .ride-info span { font-weight: bold; color: #333; }
-    .btn-group { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-group { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
     .btn-call {
       flex: 1;
       padding: 12px;
@@ -92,6 +92,20 @@
       text-decoration: none;
       text-align: center;
     }
+    .btn-map {
+      flex: 1;
+      padding: 12px;
+      background: #e8f5f0;
+      color: #0A7C5C;
+      border: 2px solid #0A7C5C;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+    .btn-map:hover { background: #0A7C5C; color: white; }
     .btn-accept {
       flex: 1;
       padding: 12px;
@@ -102,6 +116,14 @@
       font-size: 15px;
       font-weight: bold;
       cursor: pointer;
+    }
+    .ride-map {
+      width: 100%;
+      height: 200px;
+      border-radius: 10px;
+      margin-top: 12px;
+      border: 2px solid #e0e0e0;
+      display: none;
     }
     .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
     .badge-accepted {
@@ -160,7 +182,6 @@
     let currentDriverPhone = "";
 
     const savedPhone = localStorage.getItem("driver_phone");
-
     if (savedPhone) {
       currentDriverPhone = savedPhone;
       document.getElementById("loginScreen").style.display = "none";
@@ -209,18 +230,35 @@
       snap.forEach(docSnap => {
         const r = docSnap.data();
         const id = docSnap.id;
+        const hasLocation = r.lat && r.lng;
+
+        // زر الخريطة — إذا عنده إحداثيات يفتح خرائط Google، وإلا يبحث بالنص
+        const mapUrl = hasLocation
+          ? `https://maps.google.com/?q=${r.lat},${r.lng}`
+          : `https://maps.google.com/?q=${encodeURIComponent(r.from)}`;
+
         list.innerHTML += `
           <div class="ride-card" id="card-${id}">
             <h3>👤 ${r.name}</h3>
             <div class="ride-info">📍 من: <span>${r.from}</span></div>
             <div class="ride-info">🏥 إلى: <span>${r.to}</span></div>
             <div class="ride-info">📞 الهاتف: <span>${r.phone}</span></div>
-            <div class="btn-group">
-              <a class="btn-call" href="tel:${r.phone}">📞 اتصال بالمريض</a>
-              <button class="btn-accept" onclick="acceptRide('${id}')">✅ قبول الطلب</button>
+            ${hasLocation ? `<iframe class="ride-map" id="map-${id}" src="https://maps.google.com/maps?q=${r.lat},${r.lng}&z=15&output=embed" frameborder="0" allowfullscreen></iframe>` : ""}
+            <div class="btn-group" id="btns-${id}">
+              <a class="btn-call" href="tel:${r.phone}">📞 اتصال</a>
+              <a class="btn-map" href="${mapUrl}" target="_blank">🗺️ موقع المريض</a>
+              <button class="btn-accept" onclick="acceptRide('${id}')">✅ قبول</button>
             </div>
           </div>
         `;
+
+        // إظهار الخريطة المدمجة تلقائياً إذا عنده إحداثيات
+        if (hasLocation) {
+          setTimeout(() => {
+            const mapEl = document.getElementById(`map-${id}`);
+            if (mapEl) mapEl.style.display = "block";
+          }, 100);
+        }
       });
     }
 
@@ -229,7 +267,7 @@
       await updateDoc(rideRef, { status: "accepted", driver_phone: currentDriverPhone });
       const card = document.getElementById("card-" + rideId);
       card.innerHTML += '<div class="badge-accepted">✅ تم قبول الطلب!</div>';
-      card.querySelector(".btn-group").style.display = "none";
+      document.getElementById("btns-" + rideId).style.display = "none";
     }
   </script>
 </body>
