@@ -137,8 +137,8 @@
         msg.style.color = "green";
         msg.innerText = "تم التسجيل بنجاح! جارٍ نقلك للطلبات...";
 
-        sessionStorage.setItem("driver_phone", phone);
-        sessionStorage.setItem("driver_name", name);
+        localStorage.setItem("driver_phone", phone);
+        localStorage.setItem("driver_name", name);
 
         setTimeout(() => {
           window.location.href = "driver-dashboard.html";
