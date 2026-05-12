@@ -51,8 +51,6 @@
     }
     .input-group input:focus { border-color: #0A7C5C; }
     .input-group input::placeholder { color: #aaa; }
-
-    /* زر تحديد الموقع */
     .location-group { margin-bottom: 16px; }
     .location-input-row { display: flex; gap: 8px; align-items: center; }
     .location-input-row .input-group { flex: 1; margin-bottom: 0; }
@@ -77,7 +75,6 @@
       border: 2px solid #e0e0e0;
       display: none;
     }
-
     button {
       width: 100%;
       padding: 15px;
@@ -119,7 +116,6 @@
       <input id="phone" type="tel" placeholder="رقم الهاتف">
     </div>
 
-    <!-- حقل الموقع مع زر GPS -->
     <div class="location-group">
       <div class="location-input-row">
         <div class="input-group">
@@ -159,11 +155,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // متغيرات الموقع
     let userLat = null;
     let userLng = null;
 
-    // دالة تحديد الموقع
     window.getLocation = function() {
       const fromInput = document.getElementById("from");
       const map = document.getElementById("map");
@@ -179,11 +173,9 @@
           userLat = position.coords.latitude;
           userLng = position.coords.longitude;
 
-          // عرض الخريطة
           map.style.display = "block";
           map.src = `https://maps.google.com/maps?q=${userLat},${userLng}&z=15&output=embed`;
 
-          // تحويل الإحداثيات إلى اسم موقع
           try {
             const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`);
             const data = await res.json();
@@ -226,7 +218,6 @@
       }
 
       try {
-        // حفظ الطلب في Firestore مع الإحداثيات
         await addDoc(collection(db, "rides"), {
           name, phone, from, to,
           lat: userLat,
@@ -235,8 +226,7 @@
           createdAt: new Date().toISOString()
         });
 
-        // إرسال إشعار تيليغرام
-        const TELEGRAM_TOKEN = "8483708337:AAE5xlfHB1zLJLP3ztJPqAevslq2FNGZ5jM";
+        const TELEGRAM_TOKEN = "8483708137:AAE5xlfHB1zLJLP3ztJPqAevslq2FNGZ5jM";
         const CHAT_ID = "6330736812";
         const locationLink = userLat ? `\n🗺️ الموقع: https://maps.google.com/?q=${userLat},${userLng}` : "";
         const message = `🚨 طلب جديد!\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 من: ${from}\n🏥 إلى: ${to}${locationLink}`;
