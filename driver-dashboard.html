@@ -128,4 +128,252 @@
     .btn-map:hover { background: #0A7C5C; color: white; }
     .btn-accept {
       flex: 1;
-      padding
+      padding: 12px;
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-onway {
+      flex: 1;
+      padding: 12px;
+      background: #f57c00;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-arrived {
+      flex: 1;
+      padding: 12px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .ride-map {
+      width: 100%;
+      height: 200px;
+      border-radius: 10px;
+      margin-top: 12px;
+      border: 2px solid #e0e0e0;
+    }
+    .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
+
+    /* شريط الحالة */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .status-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      color: #bbb;
+    }
+    .status-step.active { color: #0A7C5C; font-weight: bold; }
+    .status-step.done { color: #0A7C5C; }
+    .status-icon { font-size: 20px; margin-bottom: 4px; }
+    .status-line { flex: 1; height: 2px; background: #e0e0e0; margin-bottom: 16px; }
+    .status-line.done { background: #0A7C5C; }
+  </style>
+</head>
+<body>
+
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <h2>🚙 لوحة السائق</h2>
+      <p>أدخل رقم هاتفك للدخول</p>
+      <input type="tel" id="phoneInput" placeholder="رقم الهاتف">
+      <button onclick="checkDriver()">دخول</button>
+      <p id="login-error"></p>
+    </div>
+  </div>
+
+  <div id="driverDashboard" style="display:none;">
+    <header>
+      <h1>🚙 وصّلني - لوحة السائق <span class="live-badge">🔴 مباشر</span></h1>
+      <button onclick="logout()">خروج 🚪</button>
+    </header>
+    <div class="container">
+      <p class="page-title">📋 الطلبات المتاحة</p>
+      <div id="ridesList">
+        <div class="empty">جارٍ التحميل...</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
+      authDomain: "wassalni-fa958.firebaseapp.com",
+      projectId: "wassalni-fa958",
+      storageBucket: "wassalni-fa958.firebasestorage.app",
+      messagingSenderId: "63888443959",
+      appId: "1:63888443959:web:3a28bf29c34c1f951d0db2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentDriverPhone = "";
+    let unsubscribe = null;
+
+    const savedPhone = localStorage.getItem("driver_phone");
+    if (savedPhone) {
+      currentDriverPhone = savedPhone;
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("driverDashboard").style.display = "block";
+      startLiveRides();
+    }
+
+    window.checkDriver = async function() {
+      const phone = document.getElementById("phoneInput").value.trim();
+      if (!phone) {
+        document.getElementById("login-error").innerText = "أدخل رقم هاتفك!";
+        return;
+      }
+      const q = query(collection(db, "drivers"), where("phone", "==", phone));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        document.getElementById("login-error").innerText = "❌ رقم الهاتف غير مسجل!";
+        return;
+      }
+      currentDriverPhone = phone;
+      localStorage.setItem("driver_phone", phone);
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("driverDashboard").style.display = "block";
+      startLiveRides();
+    }
+
+    window.logout = function() {
+      if (unsubscribe) unsubscribe();
+      localStorage.removeItem("driver_phone");
+      localStorage.removeItem("driver_name");
+      document.getElementById("driverDashboard").style.display = "none";
+      document.getElementById("loginScreen").style.display = "flex";
+      document.getElementById("phoneInput").value = "";
+    }
+
+    function statusBar(status) {
+      const steps = ["pending", "accepted", "on_the_way", "arrived"];
+      const labels = ["⏳ انتظار", "✅ مقبول", "🚗 في الطريق", "🏥 وصل"];
+      let html = '<div class="status-bar">';
+      steps.forEach((s, i) => {
+        const isDone = steps.indexOf(status) > i;
+        const isActive = status === s;
+        html += `<div class="status-step ${isActive ? "active" : ""} ${isDone ? "done" : ""}">
+          <div class="status-icon">${labels[i]}</div>
+        </div>`;
+        if (i < steps.length - 1) {
+          html += `<div class="status-line ${isDone ? "done" : ""}"></div>`;
+        }
+      });
+      html += '</div>';
+      return html;
+    }
+
+    function rideButtons(id, status) {
+      if (status === "pending") {
+        return `
+          <div class="btn-group" id="btns-${id}">
+            <a class="btn-call" href="tel:{phone}">📞 اتصال</a>
+            <a class="btn-map" href="{mapUrl}" target="_blank">🗺️ موقع المريض</a>
+            <button class="btn-accept" onclick="updateStatus('${id}', 'accepted')">✅ قبول</button>
+          </div>`;
+      } else if (status === "accepted") {
+        return `
+          <div class="btn-group" id="btns-${id}">
+            <a class="btn-call" href="tel:{phone}">📞 اتصال</a>
+            <a class="btn-map" href="{mapUrl}" target="_blank">🗺️ موقع المريض</a>
+            <button class="btn-onway" onclick="updateStatus('${id}', 'on_the_way')">🚗 في الطريق</button>
+          </div>`;
+      } else if (status === "on_the_way") {
+        return `
+          <div class="btn-group" id="btns-${id}">
+            <a class="btn-call" href="tel:{phone}">📞 اتصال</a>
+            <button class="btn-arrived" onclick="updateStatus('${id}', 'arrived')">🏥 وصلت للمريض</button>
+          </div>`;
+      } else {
+        return `<div class="btn-group"><span style="color:#2e7d32;font-weight:bold;">✅ تمت الرحلة بنجاح!</span></div>`;
+      }
+    }
+
+    function startLiveRides() {
+      // نستمع للطلبات التي قبلها هذا السائق أو لم تُقبل بعد
+      const q = query(collection(db, "rides"), where("status", "in", ["pending", "accepted", "on_the_way"]));
+
+      unsubscribe = onSnapshot(q, (snap) => {
+        const list = document.getElementById("ridesList");
+        if (snap.empty) {
+          list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
+          return;
+        }
+
+        list.innerHTML = "";
+        snap.forEach(docSnap => {
+          const r = docSnap.data();
+          const id = docSnap.id;
+          const status = r.status || "pending";
+
+          // السائق يرى الطلبات المعلقة + طلباته هو فقط
+          if (status !== "pending" && r.driver_phone !== currentDriverPhone) return;
+
+          const hasLocation = r.lat && r.lng;
+          const mapUrl = hasLocation
+            ? `https://maps.google.com/?q=${r.lat},${r.lng}`
+            : `https://maps.google.com/?q=${encodeURIComponent(r.from)}`;
+
+          let btns = rideButtons(id, status)
+            .replace("{phone}", r.phone)
+            .replace("{phone}", r.phone)
+            .replace("{mapUrl}", mapUrl)
+            .replace("{mapUrl}", mapUrl);
+
+          list.innerHTML += `
+            <div class="ride-card" id="card-${id}">
+              <h3>👤 ${r.name}</h3>
+              <div class="ride-info">📍 من: <span>${r.from}</span></div>
+              <div class="ride-info">🏥 إلى: <span>${r.to}</span></div>
+              <div class="ride-info">📞 الهاتف: <span>${r.phone}</span></div>
+              ${statusBar(status)}
+              ${hasLocation ? `<iframe class="ride-map" src="https://maps.google.com/maps?q=${r.lat},${r.lng}&z=15&output=embed" frameborder="0" allowfullscreen></iframe>` : ""}
+              ${btns}
+            </div>
+          `;
+        });
+
+        if (list.innerHTML === "") {
+          list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
+        }
+      });
+    }
+
+    window.updateStatus = async function(rideId, newStatus) {
+      const rideRef = doc(db, "rides", rideId);
+      await updateDoc(rideRef, {
+        status: newStatus,
+        driver_phone: currentDriverPhone
+      });
+    }
+  </script>
+</body>
+</html>
