@@ -173,12 +173,24 @@
 
     let currentDriverPhone = "";
 
+    // تحقق من وجود بيانات السائق المحفوظة
+    const savedPhone = sessionStorage.getItem("driver_phone");
+    const savedName = sessionStorage.getItem("driver_name");
+
+    if (savedPhone) {
+      currentDriverPhone = savedPhone;
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("driverDashboard").style.display = "block";
+      enableNotifications();
+      loadRides();
+      setInterval(loadRides, 30000);
+    }
+
     async function enableNotifications() {
       try {
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
           const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-          console.log("FCM Token:", token);
           document.getElementById("notifBanner").style.display = "block";
         }
       } catch (error) {
@@ -206,6 +218,7 @@
         return;
       }
       currentDriverPhone = phone;
+      sessionStorage.setItem("driver_phone", phone);
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("driverDashboard").style.display = "block";
       enableNotifications();
@@ -214,6 +227,8 @@
     }
 
     window.logout = function() {
+      sessionStorage.removeItem("driver_phone");
+      sessionStorage.removeItem("driver_name");
       document.getElementById("driverDashboard").style.display = "none";
       document.getElementById("loginScreen").style.display = "flex";
       document.getElementById("phoneInput").value = "";
