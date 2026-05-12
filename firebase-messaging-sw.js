@@ -1,5 +1,5 @@
-importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
+importScripts("https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js");
 
 firebase.initializeApp({
   apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -14,6 +14,6 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function(payload) {
   const title = payload.notification.title;
-  const options = { body: payload.notification.body, icon: '/icon.png' };
+  const options = { body: payload.notification.body, icon: "/icon.png" };
   self.registration.showNotification(title, options);
 });
