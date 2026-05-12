@@ -82,6 +82,7 @@
       border-radius: 14px;
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
     }
     table { width: 100%; border-collapse: collapse; }
     thead { background: #0A7C5C; color: white; }
@@ -89,14 +90,7 @@
     tbody tr { border-bottom: 1px solid #f0f0f0; }
     tbody tr:hover { background: #f8fffe; }
     tbody td { padding: 14px 18px; font-size: 14px; color: #444; text-align: right; }
-    .badge {
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      background: #fff3cd;
-      color: #856404;
-    }
+    .badge { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #fff3cd; color: #856404; }
     .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
     .section-title { color: #333; font-size: 20px; margin-bottom: 16px; font-weight: bold; }
   </style>
@@ -107,9 +101,10 @@
   <div class="login-screen" id="loginScreen">
     <div class="login-card">
       <h2>🔒 لوحة التحكم</h2>
-      <p>أدخل كلمة المرور للدخول</p>
+      <p>أدخل بيانات المدير للدخول</p>
+      <input type="email" id="emailInput" placeholder="البريد الإلكتروني">
       <input type="password" id="passwordInput" placeholder="كلمة المرور">
-      <button onclick="checkPassword()">دخول</button>
+      <button onclick="login()">دخول</button>
       <p id="login-error"></p>
     </div>
   </div>
@@ -152,7 +147,6 @@
         </table>
       </div>
 
-      <br>
       <p class="section-title">🚗 السائقون المسجلون</p>
       <div class="table-wrapper">
         <table>
@@ -176,6 +170,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -188,28 +183,36 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    const ADMIN_PASSWORD = "Wassalni@2024#";
-
-    window.checkPassword = function() {
-      const input = document.getElementById("passwordInput").value;
-      if (input === ADMIN_PASSWORD) {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
         document.getElementById("loginScreen").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
         loadData();
       } else {
-        document.getElementById("login-error").innerText = "❌ كلمة المرور خاطئة!";
+        document.getElementById("loginScreen").style.display = "flex";
+        document.getElementById("dashboard").style.display = "none";
+      }
+    });
+
+    window.login = async function() {
+      const email = document.getElementById("emailInput").value;
+      const password = document.getElementById("passwordInput").value;
+      const error = document.getElementById("login-error");
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        error.innerText = "❌ البريد أو كلمة المرور خاطئة!";
       }
     }
 
-    window.logout = function() {
-      document.getElementById("dashboard").style.display = "none";
-      document.getElementById("loginScreen").style.display = "flex";
-      document.getElementById("passwordInput").value = "";
+    window.logout = async function() {
+      await signOut(auth);
     }
 
     async function loadData() {
-      // تحميل الطلبات
       const ridesSnap = await getDocs(collection(db, "rides"));
       const ridesTable = document.getElementById("ridesTable");
       document.getElementById("totalRides").innerText = ridesSnap.size;
@@ -231,7 +234,6 @@
         });
       }
 
-      // تحميل السائقين
       const driversSnap = await getDocs(collection(db, "drivers"));
       const driversTable = document.getElementById("driversTable");
       document.getElementById("totalDrivers").innerText = driversSnap.size;
