@@ -110,7 +110,6 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -123,30 +122,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const messaging = getMessaging(app);
 
-    const VAPID_KEY = "BMD41or6VjONVkwTJjjrtCZE3o2GlDePPmxiC3D-wYqBW16Rc4lNrTKM_tNhTUn4_Gj9WiALD_hqZEA66EvPnvM";
-
-    async function requestNotificationPermission() {
-      try {
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-          const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-          await addDoc(collection(db, "fcm_tokens"), {
-            token: token,
-            type: "patient",
-            createdAt: new Date().toISOString()
-          });
-          console.log("تم حفظ التوكن ✅");
-        }
-      } catch (error) {
-        console.error("خطأ في الإشعارات:", error);
-      }
-    }
-
-    requestNotificationPermission();
-
-    // السر: اضغط على الشعار 5 مرات
     let clickCount = 0;
     let clickTimer;
     window.secretClick = function() {
@@ -173,11 +149,24 @@
       }
 
       try {
+        // حفظ الطلب في Firestore
         await addDoc(collection(db, "rides"), {
           name, phone, from, to,
           status: "pending",
           createdAt: new Date().toISOString()
         });
+
+        // إرسال إشعار تيليغرام
+        const TELEGRAM_TOKEN = "8483708137:AAE5xlfHB1zLJLP3ztJPqAevslq2FNGZ5jM";
+        const CHAT_ID = "6330736812";
+        const message = `🚨 طلب جديد!\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 من: ${from}\n🏥 إلى: ${to}`;
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: message })
+        });
+
         msg.style.color = "#0A7C5C";
         msg.innerText = "تم إرسال الطلب بنجاح! ✅";
         document.getElementById("name").value = "";
