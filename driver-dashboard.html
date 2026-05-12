@@ -24,6 +24,21 @@
       font-size: 14px;
       cursor: pointer;
     }
+    .live-badge {
+      display: inline-block;
+      background: #00c853;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-right: 10px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
     .login-screen {
       min-height: 100vh;
       display: flex;
@@ -74,6 +89,11 @@
       margin-bottom: 16px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
       border-right: 5px solid #0A7C5C;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .ride-card h3 { color: #1a1a2e; font-size: 18px; margin-bottom: 12px; }
     .ride-info { color: #555; font-size: 15px; margin-bottom: 8px; }
@@ -108,167 +128,4 @@
     .btn-map:hover { background: #0A7C5C; color: white; }
     .btn-accept {
       flex: 1;
-      padding: 12px;
-      background: #1a1a2e;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .ride-map {
-      width: 100%;
-      height: 200px;
-      border-radius: 10px;
-      margin-top: 12px;
-      border: 2px solid #e0e0e0;
-      display: none;
-    }
-    .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
-    .badge-accepted {
-      display: inline-block;
-      padding: 4px 14px;
-      background: #d4edda;
-      color: #155724;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="login-screen" id="loginScreen">
-    <div class="login-card">
-      <h2>🚙 لوحة السائق</h2>
-      <p>أدخل رقم هاتفك للدخول</p>
-      <input type="tel" id="phoneInput" placeholder="رقم الهاتف">
-      <button onclick="checkDriver()">دخول</button>
-      <p id="login-error"></p>
-    </div>
-  </div>
-
-  <div id="driverDashboard" style="display:none;">
-    <header>
-      <h1>🚙 وصّلني - لوحة السائق</h1>
-      <button onclick="logout()">خروج 🚪</button>
-    </header>
-    <div class="container">
-      <p class="page-title">📋 الطلبات المتاحة</p>
-      <div id="ridesList">
-        <div class="empty">جارٍ التحميل...</div>
-      </div>
-    </div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
-      authDomain: "wassalni-fa958.firebaseapp.com",
-      projectId: "wassalni-fa958",
-      storageBucket: "wassalni-fa958.firebasestorage.app",
-      messagingSenderId: "63888443959",
-      appId: "1:63888443959:web:3a28bf29c34c1f951d0db2"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    let currentDriverPhone = "";
-
-    const savedPhone = localStorage.getItem("driver_phone");
-    if (savedPhone) {
-      currentDriverPhone = savedPhone;
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("driverDashboard").style.display = "block";
-      loadRides();
-      setInterval(loadRides, 30000);
-    }
-
-    window.checkDriver = async function() {
-      const phone = document.getElementById("phoneInput").value.trim();
-      if (!phone) {
-        document.getElementById("login-error").innerText = "أدخل رقم هاتفك!";
-        return;
-      }
-      const q = query(collection(db, "drivers"), where("phone", "==", phone));
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        document.getElementById("login-error").innerText = "❌ رقم الهاتف غير مسجل!";
-        return;
-      }
-      currentDriverPhone = phone;
-      localStorage.setItem("driver_phone", phone);
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("driverDashboard").style.display = "block";
-      loadRides();
-      setInterval(loadRides, 30000);
-    }
-
-    window.logout = function() {
-      localStorage.removeItem("driver_phone");
-      localStorage.removeItem("driver_name");
-      document.getElementById("driverDashboard").style.display = "none";
-      document.getElementById("loginScreen").style.display = "flex";
-      document.getElementById("phoneInput").value = "";
-    }
-
-    async function loadRides() {
-      const q = query(collection(db, "rides"), where("status", "==", "pending"));
-      const snap = await getDocs(q);
-      const list = document.getElementById("ridesList");
-      if (snap.empty) {
-        list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
-        return;
-      }
-      list.innerHTML = "";
-      snap.forEach(docSnap => {
-        const r = docSnap.data();
-        const id = docSnap.id;
-        const hasLocation = r.lat && r.lng;
-
-        // زر الخريطة — إذا عنده إحداثيات يفتح خرائط Google، وإلا يبحث بالنص
-        const mapUrl = hasLocation
-          ? `https://maps.google.com/?q=${r.lat},${r.lng}`
-          : `https://maps.google.com/?q=${encodeURIComponent(r.from)}`;
-
-        list.innerHTML += `
-          <div class="ride-card" id="card-${id}">
-            <h3>👤 ${r.name}</h3>
-            <div class="ride-info">📍 من: <span>${r.from}</span></div>
-            <div class="ride-info">🏥 إلى: <span>${r.to}</span></div>
-            <div class="ride-info">📞 الهاتف: <span>${r.phone}</span></div>
-            ${hasLocation ? `<iframe class="ride-map" id="map-${id}" src="https://maps.google.com/maps?q=${r.lat},${r.lng}&z=15&output=embed" frameborder="0" allowfullscreen></iframe>` : ""}
-            <div class="btn-group" id="btns-${id}">
-              <a class="btn-call" href="tel:${r.phone}">📞 اتصال</a>
-              <a class="btn-map" href="${mapUrl}" target="_blank">🗺️ موقع المريض</a>
-              <button class="btn-accept" onclick="acceptRide('${id}')">✅ قبول</button>
-            </div>
-          </div>
-        `;
-
-        // إظهار الخريطة المدمجة تلقائياً إذا عنده إحداثيات
-        if (hasLocation) {
-          setTimeout(() => {
-            const mapEl = document.getElementById(`map-${id}`);
-            if (mapEl) mapEl.style.display = "block";
-          }, 100);
-        }
-      });
-    }
-
-    window.acceptRide = async function(rideId) {
-      const rideRef = doc(db, "rides", rideId);
-      await updateDoc(rideRef, { status: "accepted", driver_phone: currentDriverPhone });
-      const card = document.getElementById("card-" + rideId);
-      card.innerHTML += '<div class="badge-accepted">✅ تم قبول الطلب!</div>';
-      document.getElementById("btns-" + rideId).style.display = "none";
-    }
-  </script>
-</body>
-</html>
+      padding
