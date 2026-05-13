@@ -140,4 +140,26 @@
 
       try {
         await addDoc(collection(db, "drivers"), {
-          name,
+          name, phone, password, car_model, plate, area,
+          status: "available",
+          registeredAt: new Date().toISOString()
+        });
+
+        msg.style.color = "green";
+        msg.innerText = "تم التسجيل بنجاح! جارٍ نقلك للطلبات...";
+
+        localStorage.setItem("driver_phone", phone);
+        localStorage.setItem("driver_name", name);
+
+        setTimeout(() => {
+          window.location.href = "driver-dashboard.html";
+        }, 1500);
+
+      } catch (error) {
+        msg.style.color = "red";
+        msg.innerText = "حدث خطأ، حاول مرة أخرى.";
+      }
+    }
+  </script>
+</body>
+</html>
