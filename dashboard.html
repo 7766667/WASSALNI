@@ -66,7 +66,7 @@
       cursor: pointer;
     }
     .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-    .stats { display: flex; gap: 20px; margin-bottom: 30px; }
+    .stats { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
     .stat-card {
       background: white;
       border-radius: 14px;
@@ -74,6 +74,7 @@
       flex: 1;
       box-shadow: 0 4px 15px rgba(0,0,0,0.07);
       border-right: 5px solid #0A7C5C;
+      min-width: 150px;
     }
     .stat-card .number { font-size: 42px; font-weight: 800; color: #0A7C5C; }
     .stat-card .label { color: #888; font-size: 14px; margin-top: 4px; }
@@ -91,8 +92,84 @@
     tbody tr:hover { background: #f8fffe; }
     tbody td { padding: 14px 18px; font-size: 14px; color: #444; text-align: right; }
     .badge { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #fff3cd; color: #856404; }
+    .badge-accepted { background: #d4edda; color: #155724; }
+    .badge-arrived { background: #cce5ff; color: #004085; }
     .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
     .section-title { color: #333; font-size: 20px; margin-bottom: 16px; font-weight: bold; }
+
+    /* زر شحن الرصيد */
+    .btn-charge {
+      padding: 6px 14px;
+      background: #0A7C5C;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-charge:hover { opacity: 0.85; }
+    .balance-cell { font-weight: bold; color: #0A7C5C; }
+    .balance-low { color: #c62828 !important; }
+
+    /* Modal شحن الرصيد */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal h3 { color: #0A7C5C; font-size: 22px; margin-bottom: 8px; }
+    .modal p { color: #888; margin-bottom: 20px; font-size: 14px; }
+    .modal input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 16px;
+      outline: none;
+      text-align: center;
+    }
+    .modal input:focus { border-color: #0A7C5C; }
+    .modal-btns { display: flex; gap: 10px; }
+    .btn-confirm {
+      flex: 1;
+      padding: 14px;
+      background: linear-gradient(135deg, #0A7C5C, #0d9e76);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-cancel {
+      flex: 1;
+      padding: 14px;
+      background: #f0f4f8;
+      color: #555;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #modal-msg { margin-top: 12px; font-size: 14px; font-weight: bold; min-height: 20px; }
   </style>
 </head>
 <body>
@@ -126,6 +203,10 @@
           <div class="number" id="totalDrivers">0</div>
           <div class="label">إجمالي السائقين</div>
         </div>
+        <div class="stat-card">
+          <div class="number" id="totalCommission">0</div>
+          <div class="label">إجمالي العمولات (أوقية)</div>
+        </div>
       </div>
 
       <p class="section-title">📋 طلبات المرضى</p>
@@ -135,14 +216,16 @@
             <tr>
               <th>الاسم</th>
               <th>الهاتف</th>
-              <th>موقع الانطلاق</th>
-              <th>الوجهة</th>
+              <th>من</th>
+              <th>إلى</th>
+              <th>السعر</th>
+              <th>العمولة</th>
               <th>الحالة</th>
               <th>التاريخ</th>
             </tr>
           </thead>
           <tbody id="ridesTable">
-            <tr><td colspan="6" class="empty">جارٍ التحميل...</td></tr>
+            <tr><td colspan="8" class="empty">جارٍ التحميل...</td></tr>
           </tbody>
         </table>
       </div>
@@ -155,21 +238,36 @@
               <th>الاسم</th>
               <th>الهاتف</th>
               <th>نوع السيارة</th>
-              <th>رقم اللوحة</th>
               <th>المنطقة</th>
+              <th>الرصيد</th>
+              <th>شحن الرصيد</th>
             </tr>
           </thead>
           <tbody id="driversTable">
-            <tr><td colspan="5" class="empty">جارٍ التحميل...</td></tr>
+            <tr><td colspan="6" class="empty">جارٍ التحميل...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
+  <!-- Modal شحن الرصيد -->
+  <div class="modal-overlay" id="chargeModal">
+    <div class="modal">
+      <h3>💰 شحن رصيد السائق</h3>
+      <p id="modal-driver-name">اسم السائق</p>
+      <input type="number" id="chargeAmount" placeholder="المبلغ بالأوقية">
+      <div class="modal-btns">
+        <button class="btn-confirm" onclick="confirmCharge()">شحن ✅</button>
+        <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+      </div>
+      <p id="modal-msg"></p>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -184,6 +282,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+
+    let selectedDriverId = "";
+    let selectedDriverBalance = 0;
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -200,7 +301,6 @@
       const email = document.getElementById("emailInput").value;
       const password = document.getElementById("passwordInput").value;
       const error = document.getElementById("login-error");
-
       try {
         await signInWithEmailAndPassword(auth, email, password);
       } catch (err) {
@@ -213,45 +313,96 @@
     }
 
     async function loadData() {
+      // الطلبات
       const ridesSnap = await getDocs(collection(db, "rides"));
       const ridesTable = document.getElementById("ridesTable");
       document.getElementById("totalRides").innerText = ridesSnap.size;
 
+      let totalCommission = 0;
       if (ridesSnap.empty) {
-        ridesTable.innerHTML = '<tr><td colspan="6" class="empty">لا توجد طلبات بعد</td></tr>';
+        ridesTable.innerHTML = '<tr><td colspan="8" class="empty">لا توجد طلبات بعد</td></tr>';
       } else {
         ridesTable.innerHTML = "";
-        ridesSnap.forEach(doc => {
-          const r = doc.data();
+        ridesSnap.forEach(docSnap => {
+          const r = docSnap.data();
+          const commission = r.commission || 0;
+          totalCommission += commission;
+          const statusClass = r.status === "accepted" ? "badge-accepted" : r.status === "arrived" ? "badge-arrived" : "";
           ridesTable.innerHTML += `<tr>
             <td>${r.name || "-"}</td>
             <td>${r.phone || "-"}</td>
             <td>${r.from || "-"}</td>
             <td>${r.to || "-"}</td>
-            <td><span class="badge">${r.status || "pending"}</span></td>
+            <td>${r.price ? r.price + " أوقية" : "-"}</td>
+            <td>${commission ? commission + " أوقية" : "-"}</td>
+            <td><span class="badge ${statusClass}">${r.status || "pending"}</span></td>
             <td>${r.createdAt ? r.createdAt.substring(0,10) : "-"}</td>
           </tr>`;
         });
       }
+      document.getElementById("totalCommission").innerText = totalCommission;
 
+      // السائقون
       const driversSnap = await getDocs(collection(db, "drivers"));
       const driversTable = document.getElementById("driversTable");
       document.getElementById("totalDrivers").innerText = driversSnap.size;
 
       if (driversSnap.empty) {
-        driversTable.innerHTML = '<tr><td colspan="5" class="empty">لا يوجد سائقون بعد</td></tr>';
+        driversTable.innerHTML = '<tr><td colspan="6" class="empty">لا يوجد سائقون بعد</td></tr>';
       } else {
         driversTable.innerHTML = "";
-        driversSnap.forEach(doc => {
-          const d = doc.data();
+        driversSnap.forEach(docSnap => {
+          const d = docSnap.data();
+          const id = docSnap.id;
+          const balance = d.balance || 0;
+          const balanceClass = balance <= 50 ? "balance-low" : "";
           driversTable.innerHTML += `<tr>
             <td>${d.name || "-"}</td>
             <td>${d.phone || "-"}</td>
             <td>${d.car_model || "-"}</td>
-            <td>${d.plate || "-"}</td>
             <td>${d.area || "-"}</td>
+            <td class="balance-cell ${balanceClass}">${balance} أوقية</td>
+            <td><button class="btn-charge" onclick="openChargeModal('${id}', '${d.name}', ${balance})">💰 شحن</button></td>
           </tr>`;
         });
+      }
+    }
+
+    window.openChargeModal = function(driverId, driverName, balance) {
+      selectedDriverId = driverId;
+      selectedDriverBalance = balance;
+      document.getElementById("modal-driver-name").innerText = `السائق: ${driverName} | الرصيد الحالي: ${balance} أوقية`;
+      document.getElementById("chargeAmount").value = "";
+      document.getElementById("modal-msg").innerText = "";
+      document.getElementById("chargeModal").classList.add("active");
+    }
+
+    window.closeModal = function() {
+      document.getElementById("chargeModal").classList.remove("active");
+    }
+
+    window.confirmCharge = async function() {
+      const amount = parseInt(document.getElementById("chargeAmount").value);
+      const modalMsg = document.getElementById("modal-msg");
+
+      if (!amount || amount <= 0) {
+        modalMsg.style.color = "red";
+        modalMsg.innerText = "أدخل مبلغاً صحيحاً!";
+        return;
+      }
+
+      try {
+        const newBalance = selectedDriverBalance + amount;
+        await updateDoc(doc(db, "drivers", selectedDriverId), { balance: newBalance });
+        modalMsg.style.color = "#0A7C5C";
+        modalMsg.innerText = `✅ تم شحن ${amount} أوقية بنجاح!`;
+        setTimeout(() => {
+          closeModal();
+          loadData();
+        }, 1500);
+      } catch (err) {
+        modalMsg.style.color = "red";
+        modalMsg.innerText = "حدث خطأ، حاول مرة أخرى.";
       }
     }
   </script>
