@@ -75,6 +75,18 @@
       border: 2px solid #e0e0e0;
       display: none;
     }
+    /* بطاقة السعر */
+    .price-card {
+      background: linear-gradient(135deg, #0A7C5C, #0d9e76);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      color: white;
+      display: none;
+    }
+    .price-card .price-title { font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
+    .price-card .price-amount { font-size: 28px; font-weight: 800; }
+    .price-card .price-details { font-size: 12px; opacity: 0.8; margin-top: 4px; }
     button {
       width: 100%;
       padding: 15px;
@@ -129,8 +141,16 @@
 
     <div class="input-group">
       <span>🏥</span>
-      <input id="to" type="text" placeholder="الوجهة (المستشفى)">
+      <input id="to" type="text" placeholder="الوجهة (المستشفى)" onchange="calculatePrice()">
     </div>
+
+    <!-- بطاقة السعر -->
+    <div class="price-card" id="priceCard">
+      <div class="price-title">💰 السعر التقديري للرحلة</div>
+      <div class="price-amount" id="priceAmount">---</div>
+      <div class="price-details" id="priceDetails"></div>
+    </div>
+
     <button onclick="sendRide()">إرسال الطلب 🚀</button>
     <p id="msg"></p>
     <div class="dashboard-link">
@@ -155,8 +175,26 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    const PRICE_PER_KM = 40;
+    const COMMISSION = 0.40;
+
     let userLat = null;
     let userLng = null;
+    let destLat = null;
+    let destLng = null;
+    let ridePrice = 0;
+    let rideDistance = 0;
+
+    // حساب المسافة بين نقطتين (كيلومتر)
+    function getDistanceKm(lat1, lng1, lat2, lng2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
 
     window.getLocation = function() {
       const fromInput = document.getElementById("from");
@@ -183,6 +221,8 @@
           } catch {
             fromInput.value = `${userLat}, ${userLng}`;
           }
+
+          calculatePrice();
         },
         () => {
           fromInput.placeholder = "موقع الانطلاق";
@@ -190,6 +230,33 @@
           alert("لم نتمكن من تحديد موقعك. تأكد من السماح بالوصول للموقع.");
         }
       );
+    }
+
+    // البحث عن إحداثيات الوجهة وحساب السعر
+    window.calculatePrice = async function() {
+      const toInput = document.getElementById("to").value;
+      if (!userLat || !toInput) return;
+
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(toInput)}&format=json&limit=1`);
+        const data = await res.json();
+        if (data.length > 0) {
+          destLat = parseFloat(data[0].lat);
+          destLng = parseFloat(data[0].lon);
+
+          rideDistance = getDistanceKm(userLat, userLng, destLat, destLng);
+          ridePrice = Math.round(rideDistance * PRICE_PER_KM);
+
+          const myShare = Math.round(ridePrice * COMMISSION);
+          const driverShare = ridePrice - myShare;
+
+          document.getElementById("priceCard").style.display = "block";
+          document.getElementById("priceAmount").innerText = `${ridePrice} أوقية`;
+          document.getElementById("priceDetails").innerText = `📏 المسافة: ${rideDistance.toFixed(1)} كم`;
+        }
+      } catch {
+        // لا يظهر السعر إذا فشل البحث
+      }
     }
 
     let clickCount = 0;
@@ -222,6 +289,10 @@
           name, phone, from, to,
           lat: userLat,
           lng: userLng,
+          destLat, destLng,
+          distance: rideDistance,
+          price: ridePrice,
+          commission: Math.round(ridePrice * COMMISSION),
           status: "pending",
           createdAt: new Date().toISOString()
         });
@@ -229,7 +300,7 @@
         const TELEGRAM_TOKEN = "8483708137:AAE5xlfHB1zLJLP3ztJPqAevslq2FNGZ5jM";
         const CHAT_ID = "6330736812";
         const locationLink = userLat ? `\n🗺️ الموقع: https://maps.google.com/?q=${userLat},${userLng}` : "";
-        const message = `🚨 طلب جديد!\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 من: ${from}\n🏥 إلى: ${to}${locationLink}`;
+        const message = `🚨 طلب جديد!\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 من: ${from}\n🏥 إلى: ${to}\n💰 السعر: ${ridePrice} أوقية\n📏 المسافة: ${rideDistance.toFixed(1)} كم${locationLink}`;
 
         await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
           method: "POST",
@@ -244,8 +315,10 @@
         document.getElementById("from").value = "";
         document.getElementById("to").value = "";
         document.getElementById("map").style.display = "none";
-        userLat = null;
-        userLng = null;
+        document.getElementById("priceCard").style.display = "none";
+        userLat = null; userLng = null;
+        destLat = null; destLng = null;
+        ridePrice = 0; rideDistance = 0;
       } catch (error) {
         msg.style.color = "red";
         msg.innerText = "حدث خطأ، حاول مرة أخرى.";
