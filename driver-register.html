@@ -79,6 +79,10 @@
       <input id="phone" type="tel" placeholder="رقم الهاتف">
     </div>
     <div class="input-group">
+      <span>🔑</span>
+      <input id="password" type="password" placeholder="كلمة المرور">
+    </div>
+    <div class="input-group">
       <span>🚗</span>
       <input id="car_model" type="text" placeholder="نوع السيارة (مثال: تويوتا كورولا)">
     </div>
@@ -93,7 +97,7 @@
     <button onclick="registerDriver()">تسجيل الآن 🚀</button>
     <p id="msg"></p>
     <div class="back-link">
-      <a href="WASSALNI.html">← العودة لصفحة الطلب</a>
+      <a href="index.html">← العودة لصفحة الطلب</a>
     </div>
   </div>
 
@@ -116,39 +120,24 @@
     window.registerDriver = async function() {
       const name = document.getElementById("name").value;
       const phone = document.getElementById("phone").value;
+      const password = document.getElementById("password").value;
       const car_model = document.getElementById("car_model").value;
       const plate = document.getElementById("plate").value;
       const area = document.getElementById("area").value;
       const msg = document.getElementById("msg");
 
-      if (!name || !phone || !car_model || !plate || !area) {
+      if (!name || !phone || !password || !car_model || !plate || !area) {
         msg.style.color = "red";
         msg.innerText = "الرجاء ملء جميع الحقول.";
         return;
       }
 
+      if (password.length < 4) {
+        msg.style.color = "red";
+        msg.innerText = "كلمة المرور يجب أن تكون 4 أحرف على الأقل.";
+        return;
+      }
+
       try {
         await addDoc(collection(db, "drivers"), {
-          name, phone, car_model, plate, area,
-          status: "available",
-          registeredAt: new Date().toISOString()
-        });
-
-        msg.style.color = "green";
-        msg.innerText = "تم التسجيل بنجاح! جارٍ نقلك للطلبات...";
-
-        localStorage.setItem("driver_phone", phone);
-        localStorage.setItem("driver_name", name);
-
-        setTimeout(() => {
-          window.location.href = "driver-dashboard.html";
-        }, 1500);
-
-      } catch (error) {
-        msg.style.color = "red";
-        msg.innerText = "حدث خطأ، حاول مرة أخرى.";
-      }
-    }
-  </script>
-</body>
-</html>
+          name,
