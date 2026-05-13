@@ -82,6 +82,36 @@
     #login-error { color: red; margin-top: 12px; font-size: 14px; }
     .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
     .page-title { color: #333; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
+
+    /* بطاقة الرصيد */
+    .balance-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .balance-card .balance-label { font-size: 14px; opacity: 0.8; margin-bottom: 6px; }
+    .balance-card .balance-amount { font-size: 32px; font-weight: 800; }
+    .balance-card .balance-icon { font-size: 40px; }
+    .balance-low { background: linear-gradient(135deg, #c62828, #b71c1c) !important; }
+
+    /* تنبيه رصيد منخفض */
+    .alert-box {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #856404;
+      display: none;
+    }
+
     .ride-card {
       background: white;
       border-radius: 16px;
@@ -98,6 +128,15 @@
     .ride-card h3 { color: #1a1a2e; font-size: 18px; margin-bottom: 12px; }
     .ride-info { color: #555; font-size: 15px; margin-bottom: 8px; }
     .ride-info span { font-weight: bold; color: #333; }
+    .ride-price {
+      background: #e8f5f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin: 10px 0;
+      font-size: 14px;
+      color: #0A7C5C;
+    }
+    .ride-price strong { font-size: 18px; }
     .btn-group { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
     .btn-call {
       flex: 1; padding: 12px; background: #0A7C5C; color: white;
@@ -158,6 +197,22 @@
       <button onclick="logout()">خروج 🚪</button>
     </header>
     <div class="container">
+
+      <!-- بطاقة الرصيد -->
+      <div class="balance-card" id="balanceCard">
+        <div>
+          <div class="balance-label">رصيدك الحالي</div>
+          <div class="balance-amount" id="balanceAmount">---</div>
+          <div style="font-size:12px;opacity:0.7;margin-top:4px;">أوقية جديدة</div>
+        </div>
+        <div class="balance-icon">💰</div>
+      </div>
+
+      <!-- تنبيه رصيد منخفض -->
+      <div class="alert-box" id="alertBox">
+        ⚠️ رصيدك منخفض! تواصل مع الإدارة لشحن رصيدك واستمرار العمل.
+      </div>
+
       <p class="page-title">📋 الطلبات المتاحة</p>
       <div id="ridesList">
         <div class="empty">جارٍ التحميل...</div>
@@ -167,7 +222,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -181,7 +236,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    const COMMISSION = 0.40;
     let currentDriverPhone = "";
+    let currentDriverDocId = "";
+    let currentBalance = 0;
     let unsubscribe = null;
 
     const savedPhone = localStorage.getItem("driver_phone");
@@ -189,6 +247,7 @@
       currentDriverPhone = savedPhone;
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("driverDashboard").style.display = "block";
+      loadDriverBalance();
       startLiveRides();
     }
 
@@ -211,16 +270,51 @@
         return;
       }
       currentDriverPhone = phone;
+      currentDriverDocId = snap.docs[0].id;
       localStorage.setItem("driver_phone", phone);
+      localStorage.setItem("driver_doc_id", currentDriverDocId);
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("driverDashboard").style.display = "block";
+      loadDriverBalance();
       startLiveRides();
+    }
+
+    async function loadDriverBalance() {
+      const docId = localStorage.getItem("driver_doc_id");
+      if (!docId) {
+        // ابحث بالهاتف
+        const q = query(collection(db, "drivers"), where("phone", "==", currentDriverPhone));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          currentDriverDocId = snap.docs[0].id;
+          localStorage.setItem("driver_doc_id", currentDriverDocId);
+          currentBalance = snap.docs[0].data().balance || 0;
+        }
+      } else {
+        currentDriverDocId = docId;
+        const driverDoc = await getDoc(doc(db, "drivers", docId));
+        currentBalance = driverDoc.data().balance || 0;
+      }
+      updateBalanceUI();
+    }
+
+    function updateBalanceUI() {
+      document.getElementById("balanceAmount").innerText = `${currentBalance} أوقية`;
+      const card = document.getElementById("balanceCard");
+      const alert = document.getElementById("alertBox");
+      if (currentBalance <= 50) {
+        card.classList.add("balance-low");
+        alert.style.display = "block";
+      } else {
+        card.classList.remove("balance-low");
+        alert.style.display = "none";
+      }
     }
 
     window.logout = function() {
       if (unsubscribe) unsubscribe();
       localStorage.removeItem("driver_phone");
-      localStorage.removeItem("driver_name");
+      localStorage.removeItem("driver_doc_id");
       document.getElementById("driverDashboard").style.display = "none";
       document.getElementById("loginScreen").style.display = "flex";
       document.getElementById("phoneInput").value = "";
@@ -245,13 +339,14 @@
       return html;
     }
 
-    function rideButtons(id, status, phone, mapUrl) {
+    function rideButtons(id, status, phone, mapUrl, price) {
+      const commission = Math.round(price * COMMISSION);
       if (status === "pending") {
         return `
           <div class="btn-group" id="btns-${id}">
             <a class="btn-call" href="tel:${phone}">📞 اتصال</a>
             <a class="btn-map" href="${mapUrl}" target="_blank">🗺️ موقع المريض</a>
-            <button class="btn-accept" onclick="updateStatus('${id}', 'accepted')">✅ قبول</button>
+            <button class="btn-accept" onclick="acceptRide('${id}', ${commission})">✅ قبول (${commission} أوقية)</button>
           </div>`;
       } else if (status === "accepted") {
         return `
@@ -285,10 +380,16 @@
           const id = docSnap.id;
           const status = r.status || "pending";
           if (status !== "pending" && r.driver_phone !== currentDriverPhone) return;
+
+          // إذا رصيد السائق 0 لا يرى الطلبات المعلقة
+          if (status === "pending" && currentBalance <= 0) return;
+
           const hasLocation = r.lat && r.lng;
           const mapUrl = hasLocation
             ? `https://maps.google.com/?q=${r.lat},${r.lng}`
             : `https://maps.google.com/?q=${encodeURIComponent(r.from)}`;
+          const price = r.price || 0;
+          const commission = Math.round(price * COMMISSION);
 
           list.innerHTML += `
             <div class="ride-card" id="card-${id}">
@@ -296,25 +397,47 @@
               <div class="ride-info">📍 من: <span>${r.from}</span></div>
               <div class="ride-info">🏥 إلى: <span>${r.to}</span></div>
               <div class="ride-info">📞 الهاتف: <span>${r.phone}</span></div>
+              ${price > 0 ? `
+              <div class="ride-price">
+                💰 سعر الرحلة: <strong>${price} أوقية</strong>
+                &nbsp;|&nbsp; نسبة الموقع: <strong style="color:#c62828;">${commission} أوقية</strong>
+                &nbsp;|&nbsp; نصيبك: <strong>${price - commission} أوقية</strong>
+              </div>` : ""}
               ${statusBar(status)}
               ${hasLocation ? `<iframe class="ride-map" src="https://maps.google.com/maps?q=${r.lat},${r.lng}&z=15&output=embed" frameborder="0" allowfullscreen></iframe>` : ""}
-              ${rideButtons(id, status, r.phone, mapUrl)}
+              ${rideButtons(id, status, r.phone, mapUrl, price)}
             </div>
           `;
         });
 
         if (list.innerHTML === "") {
-          list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
+          if (currentBalance <= 0) {
+            list.innerHTML = '<div class="empty">⚠️ رصيدك نفد! تواصل مع الإدارة لشحن رصيدك.</div>';
+          } else {
+            list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
+          }
         }
       });
     }
 
+    // قبول الرحلة مع خصم العمولة
+    window.acceptRide = async function(rideId, commission) {
+      if (currentBalance < commission) {
+        alert(`❌ رصيدك غير كافٍ! تحتاج ${commission} أوقية وعندك ${currentBalance} أوقية فقط.`);
+        return;
+      }
+      const newBalance = currentBalance - commission;
+      const rideRef = doc(db, "rides", rideId);
+      const driverRef = doc(db, "drivers", currentDriverDocId);
+      await updateDoc(rideRef, { status: "accepted", driver_phone: currentDriverPhone });
+      await updateDoc(driverRef, { balance: newBalance });
+      currentBalance = newBalance;
+      updateBalanceUI();
+    }
+
     window.updateStatus = async function(rideId, newStatus) {
       const rideRef = doc(db, "rides", rideId);
-      await updateDoc(rideRef, {
-        status: newStatus,
-        driver_phone: currentDriverPhone
-      });
+      await updateDoc(rideRef, { status: newStatus, driver_phone: currentDriverPhone });
     }
   </script>
 </body>
