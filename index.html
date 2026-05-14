@@ -5,93 +5,38 @@
   <title>وصّلني - طلب توصيلة</title>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-      min-height: 100vh;
+      font-family: Arial;
       background: linear-gradient(135deg, #0A7C5C, #0d9e76);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      padding: 20px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
     }
 
     .card {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      background:white;
+      padding:30px;
+      border-radius:15px;
+      width:350px;
+      text-align:center;
     }
 
-    .logo { text-align: center; margin-bottom: 30px; }
-
-    .logo h1 {
-      font-size: 32px;
-      color: #0A7C5C;
-      font-weight: 800;
-    }
-
-    .logo p {
-      color: #888;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .input-group { margin-bottom: 16px; }
-
-    .input-group input {
-      width: 100%;
-      padding: 14px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 15px;
+    input, button {
+      width:100%;
+      padding:10px;
+      margin:5px 0;
     }
 
     button {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #0A7C5C, #0d9e76);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
+      background:#0A7C5C;
+      color:white;
+      border:none;
+      cursor:pointer;
     }
 
-    #msg {
-      text-align: center;
-      margin-top: 16px;
-      font-weight: bold;
-      min-height: 24px;
-    }
+    #msg { margin-top:10px; font-weight:bold; }
 
-    .links {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .links a {
-      display: block;
-      margin-top: 10px;
-      color: #0A7C5C;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    .links a:hover {
-      text-decoration: underline;
-    }
-
-    /* 🔥 حماية بسيطة أثناء التحميل */
-    #loading {
-      text-align: center;
-      margin-bottom: 10px;
-      color: #666;
-    }
   </style>
 </head>
 
@@ -99,41 +44,24 @@
 
 <div class="card">
 
-  <div class="logo">
-    <h1>🚗 وصّلني</h1>
-    <p>خدمة النقل الطبي في موريتانيا</p>
-  </div>
+  <h2 onclick="secretClick()">🚗 وصّلني</h2>
 
-  <div id="loading">جاري التحقق من تسجيل الدخول...</div>
+  <input id="name" placeholder="الاسم">
+  <input id="phone" placeholder="الهاتف">
+  <input id="from" placeholder="من">
+  <input id="to" placeholder="إلى">
 
-  <div class="input-group">
-    <input id="name" type="text" placeholder="الاسم الكامل">
-  </div>
-
-  <div class="input-group">
-    <input id="phone" type="tel" placeholder="رقم الهاتف">
-  </div>
-
-  <div class="input-group">
-    <input id="from" type="text" placeholder="موقع الانطلاق">
-  </div>
-
-  <div class="input-group">
-    <input id="to" type="text" placeholder="الوجهة">
-  </div>
-
-  <button onclick="sendRide()">إرسال الطلب 🚀</button>
+  <button onclick="sendRide()">إرسال الطلب</button>
 
   <p id="msg"></p>
 
-  <div class="links">
-    <a href="driver-register.html">🚗 تسجيل سائق جديد</a>
-    <a href="driver-dashboard.html">🚙 دخول السائقين</a>
-  </div>
+  <br>
+  <a href="login.html">تسجيل دخول</a>
+  <br>
+  <a href="driver-dashboard.html">لوحة السائق</a>
 
 </div>
 
-<!-- Firebase -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -143,69 +71,60 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 const firebaseConfig = {
   apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
   authDomain: "wassalni-fa958.firebaseapp.com",
-  projectId: "wassalni-fa958",
-  storageBucket: "wassalni-fa958.firebasestorage.app",
-  messagingSenderId: "63888443959",
-  appId: "1:63888443959:web:3a28bf29c34c1f951d0db2"
+  projectId: "wassalni-fa958"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let currentUser = null;
+let user = null;
 
-// 🔐 التحقق من تسجيل الدخول
-onAuthStateChanged(auth, (user) => {
-
-  document.getElementById("loading").style.display = "none";
-
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  currentUser = user;
+onAuthStateChanged(auth, (u) => {
+  user = u;
+  if (!user) window.location.href = "login.html";
 });
 
-// 🚀 إرسال الطلب
-window.sendRide = async function () {
+// 🚗 إرسال الطلب
+window.sendRide = async function() {
+
+  if (!user) return;
 
   const name = document.getElementById("name").value;
   const phone = document.getElementById("phone").value;
   const from = document.getElementById("from").value;
   const to = document.getElementById("to").value;
-  const msg = document.getElementById("msg");
-
-  if (!currentUser) {
-    msg.innerText = "يجب تسجيل الدخول أولاً";
-    return;
-  }
-
-  if (!name || !phone || !from || !to) {
-    msg.innerText = "املأ جميع الحقول";
-    return;
-  }
 
   try {
-    await addDoc(collection(db, "rides"), {
-      userId: currentUser.uid,
-      name,
-      phone,
-      from,
-      to,
-      status: "pending",
-      createdAt: new Date().toISOString()
+    await addDoc(collection(db,"rides"),{
+      userId:user.uid,
+      name,phone,from,to,
+      status:"pending",
+      createdAt:Date.now()
     });
 
-    msg.style.color = "green";
-    msg.innerText = "تم إرسال الطلب بنجاح ✅";
+    document.getElementById("msg").innerText = "تم إرسال الطلب ✔";
 
-  } catch (e) {
-    msg.style.color = "red";
-    msg.innerText = "حدث خطأ أثناء الإرسال (تحقق من Firebase Rules)";
+  } catch(e) {
+    document.getElementById("msg").innerText = "خطأ في الإرسال";
   }
 };
+
+// 🔥 سر لوحة التحكم
+let count = 0;
+let timer;
+
+window.secretClick = function() {
+  count++;
+  clearTimeout(timer);
+
+  timer = setTimeout(()=>count=0,3000);
+
+  if(count>=5){
+    count=0;
+    window.location.href="admin.html";
+  }
+}
 
 </script>
 
