@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>وصّلني - طلب توصيلة</title>
   <style>
-    /* نفس CSS الخاص بك بدون تغيير */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       min-height: 100vh;
@@ -24,14 +23,25 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.2);
     }
     .logo { text-align: center; margin-bottom: 30px; }
-    .logo h1 { font-size: 32px; color: #0A7C5C; font-weight: 800; }
-    .logo p { color: #888; font-size: 14px; margin-top: 4px; }
-    .input-group { margin-bottom: 16px; }
+    .logo h1 {
+      font-size: 32px;
+      color: #0A7C5C;
+      font-weight: 800;
+    }
+    .logo p {
+      color: #888;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
     .input-group input {
       width: 100%;
       padding: 14px;
       border: 2px solid #e0e0e0;
       border-radius: 10px;
+      font-size: 15px;
     }
     button {
       width: 100%;
@@ -44,7 +54,29 @@
       font-weight: bold;
       cursor: pointer;
     }
-    #msg { text-align: center; margin-top: 16px; font-weight: bold; }
+    #msg {
+      text-align: center;
+      margin-top: 16px;
+      font-weight: bold;
+      min-height: 24px;
+    }
+
+    .links {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .links a {
+      display: block;
+      margin-top: 10px;
+      color: #0A7C5C;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -77,21 +109,19 @@
 
   <p id="msg"></p>
 
+  <!-- 🔥 روابط السائقين -->
+  <div class="links">
+    <a href="driver-register.html">🚗 تسجيل سائق جديد</a>
+    <a href="driver-dashboard.html">🚙 دخول السائقين</a>
+  </div>
+
 </div>
 
 <!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -108,7 +138,7 @@
 
   let currentUser = null;
 
-  // 🔐 التحقق من تسجيل الدخول
+  // 🔐 تسجيل الدخول الإجباري
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = "login.html";
@@ -137,7 +167,7 @@
 
     try {
       await addDoc(collection(db, "rides"), {
-        userId: currentUser.uid,   // 🔥 مهم جدًا
+        userId: currentUser.uid,
         name,
         phone,
         from,
