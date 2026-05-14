@@ -3,130 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <title>وصّلني - طلب توصيلة</title>
-
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: Arial;
+      min-height: 100vh;
       background: linear-gradient(135deg, #0A7C5C, #0d9e76);
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-height:100vh;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif; padding: 20px;
     }
-
     .card {
-      background:white;
-      padding:30px;
-      border-radius:15px;
-      width:350px;
-      text-align:center;
+      background: white; border-radius: 20px; padding: 40px;
+      width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
     }
-
-    input, button {
-      width:100%;
-      padding:10px;
-      margin:5px 0;
+    .logo { text-align: center; margin-bottom: 30px; }
+    .logo h1 { font-size: 32px; color: #0A7C5C; font-weight: 800; cursor: pointer; user-select: none; }
+    .logo p { color: #888; font-size: 14px; margin-top: 4px; }
+    .input-group { position: relative; margin-bottom: 16px; }
+    .input-group span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; }
+    .input-group input {
+      width: 100%; padding: 14px 44px 14px 14px;
+      border: 2px solid #e0e0e0; border-radius: 10px;
+      font-size: 15px; outline: none; color: #333; text-align: right;
     }
-
+    .input-group input:focus { border-color: #0A7C5C; }
+    .input-group input::placeholder { color: #aaa; }
+    .location-group { margin-bottom: 16px; }
+    .location-input-row { display: flex; gap: 8px; align-items: center; }
+    .location-input-row .input-group { flex: 1; margin-bottom: 0; }
+    .locate-btn {
+      padding: 14px 16px; background: #e8f5f0; color: #0A7C5C;
+      border: 2px solid #0A7C5C; border-radius: 10px; font-size: 20px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .locate-btn:hover { background: #0A7C5C; color: white; }
+    #map { width: 100%; height: 200px; border-radius: 10px; margin-top: 10px; border: 2px solid #e0e0e0; display: none; }
+    .price-card {
+      background: linear-gradient(135deg, #0A7C5C, #0d9e76);
+      border-radius: 14px; padding: 16px 20px; margin-bottom: 16px; color: white; display: none;
+    }
+    .price-card .price-title { font-size: 13px; opacity: 0.85; margin-bottom: 6px; }
+    .price-card .price-amount { font-size: 28px; font-weight: 800; }
+    .price-card .price-details { font-size: 12px; opacity: 0.8; margin-top: 4px; }
     button {
-      background:#0A7C5C;
-      color:white;
-      border:none;
-      cursor:pointer;
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, #0A7C5C, #0d9e76);
+      color: white; border: none; border-radius: 10px;
+      font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 8px;
     }
-
-    #msg { margin-top:10px; font-weight:bold; }
-
+    button:hover { opacity: 0.92; }
+    #msg { text-align: center; margin-top: 16px; font-size: 15px; font-weight: bold; min-height: 24px; }
+    .dashboard-link { text-align: center; margin-top: 20px; }
+    .dashboard-link a {
+      color: #0A7C5C; text-decoration: none; font-size: 14px;
+      font-weight: bold; display: block; margin-top: 8px;
+    }
+    .dashboard-link a:hover { text-decoration: underline; }
   </style>
 </head>
-
 <body>
+  <div class="card">
+    <div class="logo">
+      <h1 id="secretLogo" onclick="secretClick()">🚗 وصّلني</h1>
+      <p>خدمة النقل الطبي في موريتانيا</p>
+    </div>
+    <div class="input-group">
+      <span>👤</span>
+      <input id="name" type="text" placeholder="الاسم الكامل">
+    </div>
+    <div class="input-group">
+      <span>📞</span>
+      <input id="phone" type="tel" placeholder="رقم الهاتف">
+    </div>
+    <div class="location-group">
+      <div class="location-input-row">
+        <div class="input-group">
+          <span>📍</span>
+          <input id="from" type="text" placeholder="موقع الانطلاق">
+        </div>
+        <button class="locate-btn" onclick="getLocation()" title="تحديد موقعي تلقائياً">🎯</button>
+      </div>
+      <iframe id="map" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="input-group">
+      <span>🏥</span>
+      <input id="to" type="text" placeholder="الوجهة (المستشفى)" onchange="calculatePrice()">
+    </div>
+    <div class="price-card" id="priceCard">
+      <div class="price-title">💰 السعر التقديري للرحلة</div>
+      <div class="price-amount" id="priceAmount">---</div>
+      <div class="price-details" id="priceDetails"></div>
+    </div>
+    <button onclick="sendRide()">إرسال الطلب 🚀</button>
+    <p id="msg"></p>
+    <div class="dashboard-link">
+      <a href="driver-register.html">🚗 هل أنت سائق؟ سجّل هنا</a>
+      <a href="driver-dashboard.html">🚙 دخول السائقين</a>
+    </div>
+  </div>
 
-<div class="card">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  <h2 onclick="secretClick()">🚗 وصّلني</h2>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
+      authDomain: "wassalni-fa958.firebaseapp.com",
+      projectId: "wassalni-fa958",
+      storageBucket: "wassalni-fa958.firebasestorage.app",
+      messagingSenderId: "63888443959",
+      appId: "1:63888443959:web:3a28bf29c34c1f951d0db2"
+    };
 
-  <input id="name" placeholder="الاسم">
-  <input id="phone" placeholder="الهاتف">
-  <input id="from" placeholder="من">
-  <input id="to" placeholder="إلى">
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  <button onclick="sendRide()">إرسال الطلب</button>
+    const PRICE_PER_KM = 40;
+    const COMMISSION = 0.40;
+    let userLat = null, userLng = null;
+    let destLat = null, destLng = null;
+    let ridePrice = 0, rideDistance = 0;
 
-  <p id="msg"></p>
+    function getDistanceKm(lat1, lng1, lat2, lng2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
 
-  <br>
-  <a href="login.html">تسجيل دخول</a>
-  <br>
-  <a href="driver-dashboard.html">لوحة السائق</a>
+    window.getLocation = function() {
+      const fromInput = document.getElementById("from");
+      fromInput.placeholder = "جارٍ تحديد موقعك...";
+      if (!navigator.geolocation) { fromInput.value = "المتصفح لا يدعم GPS"; return; }
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        userLat = position.coords.latitude;
+        userLng = position.coords.longitude;
+        const map = document.getElementById("map");
+        map.style.display = "block";
+        map.src = `https://maps.google.com/maps?q=${userLat},${userLng}&z=15&output=embed`;
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`);
+          const data = await res.json();
+          fromInput.value = data.display_name || `${userLat}, ${userLng}`;
+        } catch { fromInput.value = `${userLat}, ${userLng}`; }
+        calculatePrice();
+      }, () => {
+        fromInput.placeholder = "موقع الانطلاق";
+        alert("لم نتمكن من تحديد موقعك.");
+      });
+    }
 
-</div>
+    window.calculatePrice = async function() {
+      const toInput = document.getElementById("to").value;
+      if (!userLat || !toInput) return;
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(toInput)}&format=json&limit=1`);
+        const data = await res.json();
+        if (data.length > 0) {
+          destLat = parseFloat(data[0].lat);
+          destLng = parseFloat(data[0].lon);
+          rideDistance = getDistanceKm(userLat, userLng, destLat, destLng);
+          ridePrice = Math.round(rideDistance * PRICE_PER_KM);
+          document.getElementById("priceCard").style.display = "block";
+          document.getElementById("priceAmount").innerText = `${ridePrice} أوقية`;
+          document.getElementById("priceDetails").innerText = `📏 المسافة: ${rideDistance.toFixed(1)} كم`;
+        }
+      } catch {}
+    }
 
-<script type="module">
+    let clickCount = 0, clickTimer;
+    window.secretClick = function() {
+      clickCount++;
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => { clickCount = 0; }, 3000);
+      if (clickCount >= 5) { clickCount = 0; window.location.href = "dashboard.html"; }
+    }
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    window.sendRide = async function() {
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const from = document.getElementById("from").value;
+      const to = document.getElementById("to").value;
+      const msg = document.getElementById("msg");
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
-  authDomain: "wassalni-fa958.firebaseapp.com",
-  projectId: "wassalni-fa958"
-};
+      if (!name || !phone || !from || !to) {
+        msg.style.color = "red"; msg.innerText = "الرجاء ملء جميع الحقول."; return;
+      }
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+      try {
+        await addDoc(collection(db, "rides"), {
+          name, phone, from, to,
+          lat: userLat, lng: userLng,
+          destLat, destLng,
+          distance: rideDistance,
+          price: ridePrice,
+          commission: Math.round(ridePrice * COMMISSION),
+          status: "pending",
+          createdAt: new Date().toISOString()
+        });
 
-let user = null;
+        const TELEGRAM_TOKEN = "8483708137:AAE5xlfHB1zLJLP3ztJPqAevslq2FNGZ5jM";
+        const CHAT_ID = "6330736812";
+        const locationLink = userLat ? `\n🗺️ الموقع: https://maps.google.com/?q=${userLat},${userLng}` : "";
+        const message = `🚨 طلب جديد!\n👤 ${name}\n📞 ${phone}\n📍 من: ${from}\n🏥 إلى: ${to}\n💰 السعر: ${ridePrice} أوقية\n📏 المسافة: ${rideDistance.toFixed(1)} كم${locationLink}`;
 
-onAuthStateChanged(auth, (u) => {
-  user = u;
-  if (!user) window.location.href = "login.html";
-});
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: message })
+        });
 
-// 🚗 إرسال الطلب
-window.sendRide = async function() {
-
-  if (!user) return;
-
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const from = document.getElementById("from").value;
-  const to = document.getElementById("to").value;
-
-  try {
-    await addDoc(collection(db,"rides"),{
-      userId:user.uid,
-      name,phone,from,to,
-      status:"pending",
-      createdAt:Date.now()
-    });
-
-    document.getElementById("msg").innerText = "تم إرسال الطلب ✔";
-
-  } catch(e) {
-    document.getElementById("msg").innerText = "خطأ في الإرسال";
-  }
-};
-
-// 🔥 سر لوحة التحكم
-let count = 0;
-let timer;
-
-window.secretClick = function() {
-  count++;
-  clearTimeout(timer);
-
-  timer = setTimeout(()=>count=0,3000);
-
-  if(count>=5){
-    count=0;
-    window.location.href="admin.html";
-  }
-}
-
-</script>
-
+        msg.style.color = "#0A7C5C";
+        msg.innerText = "تم إرسال الطلب بنجاح! ✅";
+        document.getElementById("name").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("from").value = "";
+        document.getElementById("to").value = "";
+        document.getElementById("map").style.display = "none";
+        document.getElementById("priceCard").style.display = "none";
+        userLat = null; userLng = null; destLat = null; destLng = null;
+        ridePrice = 0; rideDistance = 0;
+      } catch (error) {
+        msg.style.color = "red"; msg.innerText = "حدث خطأ، حاول مرة أخرى.";
+      }
+    }
+  </script>
 </body>
 </html>
