@@ -2,15 +2,53 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تسجيل الدخول</title>
+  <title>تسجيل الدخول - وصّلني</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding-top: 80px;
+      background: #f5f5f5;
+    }
+
+    input {
+      padding: 12px;
+      width: 250px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 5px;
+      background: #0A7C5C;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #msg {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
-<body style="font-family:Arial;text-align:center;padding-top:80px;">
+<body>
 
 <h2>تسجيل الدخول - وصّلني</h2>
 
-<input id="email" placeholder="الإيميل"><br><br>
-<input id="password" type="password" placeholder="كلمة المرور"><br><br>
+<input id="email" placeholder="الإيميل">
+<br>
+<input id="password" type="password" placeholder="كلمة المرور">
+<br><br>
 
 <button onclick="login()">دخول</button>
 <button onclick="register()">تسجيل جديد</button>
@@ -36,33 +74,33 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// 🔐 تسجيل الدخول
 window.login = async function () {
+
+  const emailValue = document.getElementById("email").value;
+  const passwordValue = document.getElementById("password").value;
+
   try {
-    const email = email.value;
-    const password = password.value;
-
-    await signInWithEmailAndPassword(auth, email, password);
-
+    await signInWithEmailAndPassword(auth, emailValue, passwordValue);
     window.location.href = "index.html";
-
   } catch (e) {
-    msg.innerText = "خطأ في تسجيل الدخول";
+    document.getElementById("msg").innerText = "خطأ في تسجيل الدخول";
   }
-}
+};
 
+// 🆕 إنشاء حساب
 window.register = async function () {
+
+  const emailValue = document.getElementById("email").value;
+  const passwordValue = document.getElementById("password").value;
+
   try {
-    const email = email.value;
-    const password = password.value;
-
-    await createUserWithEmailAndPassword(auth, email, password);
-
+    await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
     window.location.href = "index.html";
-
   } catch (e) {
-    msg.innerText = "خطأ في إنشاء الحساب";
+    document.getElementById("msg").innerText = "خطأ في إنشاء الحساب";
   }
-}
+};
 
 </script>
 
