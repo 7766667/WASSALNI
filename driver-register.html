@@ -107,39 +107,27 @@
       const msg = document.getElementById("msg");
 
       if (!name || !phone || !password || !car_model || !plate || !area) {
-        msg.style.color = "red";
-        msg.innerText = "الرجاء ملء جميع الحقول.";
-        return;
+        msg.style.color = "red"; msg.innerText = "الرجاء ملء جميع الحقول."; return;
       }
-
       if (password.length < 6) {
-        msg.style.color = "red";
-        msg.innerText = "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
-        return;
+        msg.style.color = "red"; msg.innerText = "كلمة المرور يجب أن تكون 6 أحرف على الأقل."; return;
       }
 
-      // التحقق أن الهاتف غير مسجل
       const existing = await getDocs(query(collection(db, "drivers"), where("phone", "==", phone)));
       if (!existing.empty) {
-        msg.style.color = "red";
-        msg.innerText = "رقم الهاتف مسجل مسبقاً!";
-        return;
+        msg.style.color = "red"; msg.innerText = "رقم الهاتف مسجل مسبقاً!"; return;
       }
 
       try {
-        msg.style.color = "#888";
-        msg.innerText = "جارٍ التسجيل...";
+        msg.style.color = "#888"; msg.innerText = "جارٍ التسجيل...";
 
-        // إنشاء حساب Firebase Auth
         const email = `${phone}@wassalni.com`;
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         const uid = userCred.user.uid;
 
-        // حفظ بيانات السائق في Firestore
         const docRef = await addDoc(collection(db, "drivers"), {
           uid, name, phone, car_model, plate, area,
-          balance: 0,
-          status: "available",
+          balance: 0, status: "available",
           registeredAt: new Date().toISOString()
         });
 
@@ -150,18 +138,11 @@
 
         msg.style.color = "green";
         msg.innerText = "✅ تم التسجيل بنجاح! جارٍ نقلك...";
-
-        setTimeout(() => {
-          window.location.href = "driver-dashboard.html";
-        }, 1500);
+        setTimeout(() => { window.location.href = "driver-dashboard.html"; }, 1500);
 
       } catch (error) {
         msg.style.color = "red";
-        if (error.code === "auth/email-already-in-use") {
-          msg.innerText = "رقم الهاتف مسجل مسبقاً!";
-        } else {
-          msg.innerText = "حدث خطأ: " + error.message;
-        }
+        msg.innerText = error.code === "auth/email-already-in-use" ? "رقم الهاتف مسجل مسبقاً!" : "حدث خطأ: " + error.message;
       }
     });
   </script>
