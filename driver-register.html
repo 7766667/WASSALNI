@@ -58,7 +58,7 @@
     </div>
     <div class="input-group">
       <span>🔑</span>
-      <input id="password" type="password" placeholder="كلمة المرور (4 أحرف على الأقل)">
+      <input id="password" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)">
     </div>
     <div class="input-group">
       <span>🚗</span>
@@ -82,6 +82,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -94,6 +95,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
     document.getElementById("registerBtn").addEventListener("click", async () => {
       const name = document.getElementById("name").value.trim();
@@ -110,13 +112,13 @@
         return;
       }
 
-      if (password.length < 4) {
+      if (password.length < 6) {
         msg.style.color = "red";
-        msg.innerText = "كلمة المرور يجب أن تكون 4 أحرف على الأقل.";
+        msg.innerText = "كلمة المرور يجب أن تكون 6 أحرف على الأقل.";
         return;
       }
 
-      // التحقق أن الهاتف غير مسجل مسبقاً
+      // التحقق أن الهاتف غير مسجل
       const existing = await getDocs(query(collection(db, "drivers"), where("phone", "==", phone)));
       if (!existing.empty) {
         msg.style.color = "red";
@@ -128,8 +130,14 @@
         msg.style.color = "#888";
         msg.innerText = "جارٍ التسجيل...";
 
+        // إنشاء حساب Firebase Auth
+        const email = `${phone}@wassalni.com`;
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+
+        // حفظ بيانات السائق في Firestore
         const docRef = await addDoc(collection(db, "drivers"), {
-          name, phone, password, car_model, plate, area,
+          uid, name, phone, car_model, plate, area,
           balance: 0,
           status: "available",
           registeredAt: new Date().toISOString()
@@ -138,6 +146,7 @@
         localStorage.setItem("driver_phone", phone);
         localStorage.setItem("driver_name", name);
         localStorage.setItem("driver_doc_id", docRef.id);
+        localStorage.setItem("driver_uid", uid);
 
         msg.style.color = "green";
         msg.innerText = "✅ تم التسجيل بنجاح! جارٍ نقلك...";
@@ -148,7 +157,11 @@
 
       } catch (error) {
         msg.style.color = "red";
-        msg.innerText = "حدث خطأ: " + error.message;
+        if (error.code === "auth/email-already-in-use") {
+          msg.innerText = "رقم الهاتف مسجل مسبقاً!";
+        } else {
+          msg.innerText = "حدث خطأ: " + error.message;
+        }
       }
     });
   </script>
