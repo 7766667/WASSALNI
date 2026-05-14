@@ -108,8 +108,6 @@
       border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;
     }
     #modal-msg { margin-top: 12px; font-size: 14px; font-weight: bold; min-height: 20px; }
-
-    /* خريطة تتبع السائق */
     .tracking-section {
       background: white; border-radius: 14px; padding: 24px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.07); margin-bottom: 30px; display: none;
@@ -137,7 +135,6 @@
       <h1>🚗 وصّلني - لوحة التحكم</h1>
       <button onclick="logout()">خروج 🚪</button>
     </header>
-
     <div class="container">
       <div class="stats">
         <div class="stat-card"><div class="number" id="totalRides">0</div><div class="label">إجمالي الطلبات</div></div>
@@ -152,7 +149,6 @@
         <div class="chart-card"><h3>🚗 أفضل السائقين</h3><canvas id="driversChart"></canvas></div>
       </div>
 
-      <!-- تتبع السائق -->
       <div class="tracking-section" id="trackingSection">
         <h3>📡 تتبع السائق مباشرة</h3>
         <iframe id="trackingMap" frameborder="0" allowfullscreen></iframe>
@@ -165,7 +161,7 @@
           <thead>
             <tr>
               <th>الاسم</th><th>الهاتف</th><th>من</th><th>إلى</th>
-              <th>السعر</th><th>العمولة</th><th>الحالة</th><th>تتبع السائق</th><th>التاريخ</th>
+              <th>السعر</th><th>العمولة</th><th>الحالة</th><th>تتبع</th><th>التاريخ</th>
             </tr>
           </thead>
           <tbody id="ridesTable"><tr><td colspan="9" class="empty">جارٍ التحميل...</td></tr></tbody>
@@ -187,7 +183,7 @@
   <div class="modal-overlay" id="chargeModal">
     <div class="modal">
       <h3>💰 شحن رصيد السائق</h3>
-      <p id="modal-driver-name">اسم السائق</p>
+      <p id="modal-driver-name"></p>
       <input type="number" id="chargeAmount" placeholder="المبلغ بالأوقية">
       <div class="modal-btns">
         <button class="btn-confirm" onclick="confirmCharge()">شحن ✅</button>
@@ -215,11 +211,8 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    let selectedDriverId = "";
-    let selectedDriverBalance = 0;
-    let statusChartInstance = null;
-    let weekChartInstance = null;
-    let driversChartInstance = null;
+    let selectedDriverId = "", selectedDriverBalance = 0;
+    let statusChartInstance = null, weekChartInstance = null, driversChartInstance = null;
     let trackingUnsub = null;
 
     onAuthStateChanged(auth, (user) => {
@@ -240,7 +233,7 @@
       const password = document.getElementById("passwordInput").value;
       try {
         await signInWithEmailAndPassword(auth, email, password);
-      } catch (err) {
+      } catch {
         document.getElementById("login-error").innerText = "❌ البريد أو كلمة المرور خاطئة!";
       }
     }
@@ -250,34 +243,28 @@
       await signOut(auth);
     }
 
-    // تتبع مباشر للسائقين النشطين
     function startLiveTracking() {
       const q = query(collection(db, "rides"), where("status", "in", ["accepted", "on_the_way"]));
       trackingUnsub = onSnapshot(q, (snap) => {
-        const trackingSection = document.getElementById("trackingSection");
-        if (snap.empty) { trackingSection.style.display = "none"; return; }
-
-        // أخذ أول رحلة نشطة فيها موقع سائق
+        const section = document.getElementById("trackingSection");
+        if (snap.empty) { section.style.display = "none"; return; }
         let found = false;
         snap.forEach(docSnap => {
           const r = docSnap.data();
           if (r.driver_lat && r.driver_lng && !found) {
             found = true;
-            trackingSection.style.display = "block";
-            document.getElementById("trackingMap").src =
-              `https://maps.google.com/maps?q=${r.driver_lat},${r.driver_lng}&z=15&output=embed`;
+            section.style.display = "block";
+            document.getElementById("trackingMap").src = `https://maps.google.com/maps?q=${r.driver_lat},${r.driver_lng}&z=15&output=embed`;
             const updated = r.driver_updated ? new Date(r.driver_updated).toLocaleTimeString("ar") : "-";
-            document.getElementById("trackingInfo").innerText =
-              `🚗 السائق: ${r.driver_phone || "-"} | آخر تحديث: ${updated}`;
+            document.getElementById("trackingInfo").innerText = `🚗 السائق: ${r.driver_phone || "-"} | آخر تحديث: ${updated}`;
           }
         });
-        if (!found) trackingSection.style.display = "none";
+        if (!found) section.style.display = "none";
       });
     }
 
     async function loadData() {
       const ridesSnap = await getDocs(collection(db, "rides"));
-      const ridesTable = document.getElementById("ridesTable");
       document.getElementById("totalRides").innerText = ridesSnap.size;
 
       let totalCommission = 0, totalRevenue = 0;
@@ -290,6 +277,7 @@
         weekDays[d.toISOString().substring(0, 10)] = 0;
       }
 
+      const ridesTable = document.getElementById("ridesTable");
       if (ridesSnap.empty) {
         ridesTable.innerHTML = '<tr><td colspan="9" class="empty">لا توجد طلبات بعد</td></tr>';
       } else {
@@ -304,22 +292,15 @@
           const day = r.createdAt ? r.createdAt.substring(0, 10) : null;
           if (day && weekDays[day] !== undefined) weekDays[day]++;
           if (r.driver_phone) driverRides[r.driver_phone] = (driverRides[r.driver_phone] || 0) + 1;
-
           const statusClass = s === "accepted" ? "badge-accepted" : s === "arrived" ? "badge-arrived" : s === "on_the_way" ? "badge-on_the_way" : "";
           const statusLabel = s === "pending" ? "انتظار" : s === "accepted" ? "مقبول" : s === "on_the_way" ? "في الطريق" : s === "arrived" ? "وصل" : s;
-
-          const driverLink = r.driver_lat
-            ? `<a class="btn-track" href="https://maps.google.com/?q=${r.driver_lat},${r.driver_lng}" target="_blank">📍 تتبع</a>`
-            : "-";
-
+          const driverLink = r.driver_lat ? `<a class="btn-track" href="https://maps.google.com/?q=${r.driver_lat},${r.driver_lng}" target="_blank">📍 تتبع</a>` : "-";
           ridesTable.innerHTML += `<tr>
-            <td>${r.name || "-"}</td><td>${r.phone || "-"}</td>
-            <td>${r.from || "-"}</td><td>${r.to || "-"}</td>
-            <td>${price ? price + " أوقية" : "-"}</td>
-            <td>${commission ? commission + " أوقية" : "-"}</td>
+            <td>${r.name||"-"}</td><td>${r.phone||"-"}</td><td>${r.from||"-"}</td><td>${r.to||"-"}</td>
+            <td>${price ? price+" أوقية" : "-"}</td><td>${commission ? commission+" أوقية" : "-"}</td>
             <td><span class="badge ${statusClass}">${statusLabel}</span></td>
             <td>${driverLink}</td>
-            <td>${r.createdAt ? r.createdAt.substring(0, 10) : "-"}</td>
+            <td>${r.createdAt ? r.createdAt.substring(0,10) : "-"}</td>
           </tr>`;
         });
       }
@@ -363,21 +344,21 @@
           const balanceClass = balance <= 50 ? "balance-low" : "";
           driverNames[d.phone] = d.name;
           driversTable.innerHTML += `<tr>
-            <td>${d.name || "-"}</td><td>${d.phone || "-"}</td>
-            <td>${d.car_model || "-"}</td><td>${d.area || "-"}</td>
+            <td>${d.name||"-"}</td><td>${d.phone||"-"}</td>
+            <td>${d.car_model||"-"}</td><td>${d.area||"-"}</td>
             <td class="balance-cell ${balanceClass}">${balance} أوقية</td>
-            <td><button class="btn-charge" onclick="openChargeModal('${id}', '${d.name}', ${balance})">💰 شحن</button></td>
+            <td><button class="btn-charge" onclick="openChargeModal('${id}','${d.name}',${balance})">💰 شحن</button></td>
           </tr>`;
         });
       }
 
-      const topDrivers = Object.entries(driverRides).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const topDrivers = Object.entries(driverRides).sort((a,b) => b[1]-a[1]).slice(0,5);
       if (driversChartInstance) driversChartInstance.destroy();
       driversChartInstance = new Chart(document.getElementById("driversChart"), {
         type: "bar",
         data: {
           labels: topDrivers.map(([phone]) => driverNames[phone] || phone),
-          datasets: [{ label: "الرحلات", data: topDrivers.map(([, count]) => count), backgroundColor: "#0d9e76", borderRadius: 8 }]
+          datasets: [{ label: "الرحلات", data: topDrivers.map(([,count]) => count), backgroundColor: "#0d9e76", borderRadius: 8 }]
         },
         options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
@@ -398,14 +379,11 @@
       const modalMsg = document.getElementById("modal-msg");
       if (!amount || amount <= 0) { modalMsg.style.color = "red"; modalMsg.innerText = "أدخل مبلغاً صحيحاً!"; return; }
       try {
-        const newBalance = selectedDriverBalance + amount;
-        await updateDoc(doc(db, "drivers", selectedDriverId), { balance: newBalance });
+        await updateDoc(doc(db, "drivers", selectedDriverId), { balance: selectedDriverBalance + amount });
         modalMsg.style.color = "#0A7C5C";
         modalMsg.innerText = `✅ تم شحن ${amount} أوقية بنجاح!`;
         setTimeout(() => { closeModal(); loadData(); }, 1500);
-      } catch (err) {
-        modalMsg.style.color = "red"; modalMsg.innerText = "حدث خطأ، حاول مرة أخرى.";
-      }
+      } catch { modalMsg.style.color = "red"; modalMsg.innerText = "حدث خطأ، حاول مرة أخرى."; }
     }
   </script>
 </body>
