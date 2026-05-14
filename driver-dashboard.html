@@ -8,156 +8,84 @@
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; min-height: 100vh; }
     header {
       background: linear-gradient(135deg, #1a1a2e, #16213e);
-      color: white;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      color: white; padding: 20px 40px;
+      display: flex; justify-content: space-between; align-items: center;
     }
     header h1 { font-size: 22px; font-weight: 800; }
     header button {
-      color: white;
-      background: rgba(255,255,255,0.2);
-      border: none;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 14px;
-      cursor: pointer;
+      color: white; background: rgba(255,255,255,0.2);
+      border: none; padding: 8px 18px; border-radius: 20px; font-size: 14px; cursor: pointer;
     }
     .live-badge {
-      display: inline-block;
-      background: #00c853;
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
-      padding: 4px 10px;
-      border-radius: 20px;
-      margin-right: 10px;
-      animation: pulse 1.5s infinite;
+      display: inline-block; background: #00c853; color: white;
+      font-size: 12px; font-weight: bold; padding: 4px 10px;
+      border-radius: 20px; margin-right: 10px; animation: pulse 1.5s infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     .login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; background: linear-gradient(135deg, #1a1a2e, #16213e);
     }
     .login-card {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
+      background: white; border-radius: 20px; padding: 40px;
+      width: 100%; max-width: 400px; text-align: center;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
     .login-card h2 { color: #1a1a2e; font-size: 26px; margin-bottom: 10px; }
     .login-card p { color: #888; margin-bottom: 24px; }
     .login-card input {
-      width: 100%;
-      padding: 14px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-bottom: 16px;
-      outline: none;
-      text-align: center;
+      width: 100%; padding: 14px; border: 2px solid #e0e0e0;
+      border-radius: 10px; font-size: 16px; margin-bottom: 16px;
+      outline: none; text-align: center;
     }
     .login-card input:focus { border-color: #1a1a2e; }
     .login-card button {
-      width: 100%;
-      padding: 14px;
+      width: 100%; padding: 14px;
       background: linear-gradient(135deg, #1a1a2e, #16213e);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+      color: white; border: none; border-radius: 10px;
+      font-size: 16px; font-weight: bold; cursor: pointer;
     }
     #login-error { color: red; margin-top: 12px; font-size: 14px; }
     .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
-
-    /* تبويبات */
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
+    .tabs { display: flex; gap: 10px; margin-bottom: 24px; }
     .tab-btn {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-      background: white;
-      color: #555;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-top: 0;
-      width: auto;
+      flex: 1; padding: 12px; border: none; border-radius: 10px;
+      font-size: 15px; font-weight: bold; cursor: pointer;
+      background: white; color: #555; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-top: 0; width: auto;
     }
-    .tab-btn.active {
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      color: white;
-    }
-
-    /* بطاقة الرصيد */
+    .tab-btn.active { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; }
     .balance-card {
       background: linear-gradient(135deg, #1a1a2e, #16213e);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      border-radius: 16px; padding: 24px; margin-bottom: 24px;
+      color: white; display: flex; justify-content: space-between; align-items: center;
     }
     .balance-card .balance-label { font-size: 14px; opacity: 0.8; margin-bottom: 6px; }
     .balance-card .balance-amount { font-size: 32px; font-weight: 800; }
-    .balance-card .balance-icon { font-size: 40px; }
+    .balance-icon { font-size: 40px; }
     .balance-low { background: linear-gradient(135deg, #c62828, #b71c1c) !important; }
     .alert-box {
-      background: #fff3cd;
-      border: 2px solid #ffc107;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      text-align: center;
-      font-size: 14px;
-      color: #856404;
-      display: none;
+      background: #fff3cd; border: 2px solid #ffc107; border-radius: 12px;
+      padding: 16px; margin-bottom: 20px; text-align: center;
+      font-size: 14px; color: #856404; display: none;
     }
-
-    .page-title { color: #333; font-size: 20px; font-weight: bold; margin-bottom: 20px; }
+    .tracking-badge {
+      background: #e8f5f0; border: 2px solid #0A7C5C; border-radius: 12px;
+      padding: 12px 16px; margin-bottom: 16px; text-align: center;
+      font-size: 14px; color: #0A7C5C; font-weight: bold; display: none;
+    }
     .ride-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      border-right: 5px solid #0A7C5C;
+      background: white; border-radius: 16px; padding: 24px; margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-right: 5px solid #0A7C5C;
       animation: slideIn 0.3s ease;
     }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     .ride-card h3 { color: #1a1a2e; font-size: 18px; margin-bottom: 12px; }
     .ride-info { color: #555; font-size: 15px; margin-bottom: 8px; }
     .ride-info span { font-weight: bold; color: #333; }
     .ride-price {
-      background: #e8f5f0;
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin: 10px 0;
-      font-size: 14px;
-      color: #0A7C5C;
+      background: #e8f5f0; border-radius: 10px; padding: 10px 14px;
+      margin: 10px 0; font-size: 14px; color: #0A7C5C;
     }
     .ride-price strong { font-size: 18px; }
     .btn-group { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
@@ -184,10 +112,7 @@
       flex: 1; padding: 12px; background: #2e7d32; color: white;
       border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer;
     }
-    .ride-map {
-      width: 100%; height: 200px; border-radius: 10px;
-      margin-top: 12px; border: 2px solid #e0e0e0;
-    }
+    .ride-map { width: 100%; height: 200px; border-radius: 10px; margin-top: 12px; border: 2px solid #e0e0e0; }
     .empty { text-align: center; padding: 60px; color: #bbb; font-size: 16px; }
     .status-bar {
       display: flex; align-items: center; gap: 8px; margin-top: 16px;
@@ -199,52 +124,24 @@
     .status-icon { font-size: 20px; margin-bottom: 4px; }
     .status-line { flex: 1; height: 2px; background: #e0e0e0; margin-bottom: 16px; }
     .status-line.done { background: #0A7C5C; }
-
-    /* سجل الرحلات */
     .history-card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-      border-right: 5px solid #555;
+      background: white; border-radius: 16px; padding: 20px; margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-right: 5px solid #555;
     }
     .history-card.arrived { border-right-color: #2e7d32; }
     .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .history-name { font-size: 16px; font-weight: bold; color: #1a1a2e; }
     .history-date { font-size: 12px; color: #aaa; }
     .history-info { font-size: 14px; color: #555; margin-bottom: 6px; }
-    .history-price {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-    .price-tag {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-    }
+    .history-price { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+    .price-tag { padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
     .price-tag.total { background: #e8f5f0; color: #0A7C5C; }
     .price-tag.commission { background: #fce4e4; color: #c62828; }
     .price-tag.earned { background: #e8f0fe; color: #1565c0; }
-
-    /* إحصائيات السائق */
-    .driver-stats {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
+    .driver-stats { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
     .driver-stat {
-      background: white;
-      border-radius: 12px;
-      padding: 16px;
-      flex: 1;
-      min-width: 100px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      background: white; border-radius: 12px; padding: 16px; flex: 1;
+      min-width: 100px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .driver-stat .num { font-size: 26px; font-weight: 800; color: #1a1a2e; }
     .driver-stat .lbl { font-size: 12px; color: #888; margin-top: 4px; }
@@ -258,7 +155,7 @@
       <p>أدخل بياناتك للدخول</p>
       <input type="tel" id="phoneInput" placeholder="رقم الهاتف">
       <input type="password" id="passwordInput" placeholder="كلمة المرور">
-      <button onclick="checkDriver()">دخول</button>
+      <button id="loginBtn">دخول</button>
       <p id="login-error"></p>
     </div>
   </div>
@@ -266,11 +163,9 @@
   <div id="driverDashboard" style="display:none;">
     <header>
       <h1>🚙 وصّلني - لوحة السائق <span class="live-badge">🔴 مباشر</span></h1>
-      <button onclick="logout()">خروج 🚪</button>
+      <button id="logoutBtn">خروج 🚪</button>
     </header>
     <div class="container">
-
-      <!-- بطاقة الرصيد -->
       <div class="balance-card" id="balanceCard">
         <div>
           <div class="balance-label">رصيدك الحالي</div>
@@ -282,47 +177,31 @@
       <div class="alert-box" id="alertBox">
         ⚠️ رصيدك منخفض! تواصل مع الإدارة لشحن رصيدك.
       </div>
-
-      <!-- تبويبات -->
+      <div class="tracking-badge" id="trackingBadge">
+        📡 جارٍ إرسال موقعك للمدير...
+      </div>
       <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('rides')">📋 الطلبات المتاحة</button>
-        <button class="tab-btn" onclick="showTab('history')">🕒 سجل رحلاتي</button>
+        <button class="tab-btn active" id="tabRides">📋 الطلبات المتاحة</button>
+        <button class="tab-btn" id="tabHistory">🕒 سجل رحلاتي</button>
       </div>
-
-      <!-- الطلبات المتاحة -->
       <div id="tab-rides">
-        <div id="ridesList">
-          <div class="empty">جارٍ التحميل...</div>
-        </div>
+        <div id="ridesList"><div class="empty">جارٍ التحميل...</div></div>
       </div>
-
-      <!-- سجل الرحلات -->
       <div id="tab-history" style="display:none;">
         <div class="driver-stats">
-          <div class="driver-stat">
-            <div class="num" id="statTotal">0</div>
-            <div class="lbl">إجمالي الرحلات</div>
-          </div>
-          <div class="driver-stat">
-            <div class="num" id="statEarned">0</div>
-            <div class="lbl">مكتسباتي (أوقية)</div>
-          </div>
-          <div class="driver-stat">
-            <div class="num" id="statCommission">0</div>
-            <div class="lbl">عمولات الموقع</div>
-          </div>
+          <div class="driver-stat"><div class="num" id="statTotal">0</div><div class="lbl">إجمالي الرحلات</div></div>
+          <div class="driver-stat"><div class="num" id="statEarned">0</div><div class="lbl">مكتسباتي (أوقية)</div></div>
+          <div class="driver-stat"><div class="num" id="statCommission">0</div><div class="lbl">عمولات الموقع</div></div>
         </div>
-        <div id="historyList">
-          <div class="empty">جارٍ التحميل...</div>
-        </div>
+        <div id="historyList"><div class="empty">جارٍ التحميل...</div></div>
       </div>
-
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
@@ -335,122 +214,128 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
     const COMMISSION = 0.40;
     let currentDriverPhone = "";
     let currentDriverDocId = "";
     let currentBalance = 0;
     let unsubscribe = null;
+    let locationInterval = null;
+    let activeRideId = null;
 
-    const savedPhone = localStorage.getItem("driver_phone");
-    if (savedPhone) {
-      currentDriverPhone = savedPhone;
-      currentDriverDocId = localStorage.getItem("driver_doc_id") || "";
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("driverDashboard").style.display = "block";
-      loadDriverBalance();
-      startLiveRides();
-    }
-
-    window.checkDriver = async function() {
+    document.getElementById("loginBtn").addEventListener("click", async () => {
       const phone = document.getElementById("phoneInput").value.trim();
       const password = document.getElementById("passwordInput").value.trim();
-      if (!phone || !password) {
-        document.getElementById("login-error").innerText = "أدخل رقم الهاتف وكلمة المرور!";
-        return;
+      const error = document.getElementById("login-error");
+      if (!phone || !password) { error.innerText = "أدخل رقم الهاتف وكلمة المرور!"; return; }
+      try {
+        await signInWithEmailAndPassword(auth, `${phone}@wassalni.com`, password);
+      } catch (err) {
+        error.innerText = "❌ رقم الهاتف أو كلمة المرور خاطئة!";
       }
-      const q = query(collection(db, "drivers"), where("phone", "==", phone));
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        document.getElementById("login-error").innerText = "❌ رقم الهاتف غير مسجل!";
-        return;
-      }
-      const driverData = snap.docs[0].data();
-      if (driverData.password !== password) {
-        document.getElementById("login-error").innerText = "❌ كلمة المرور خاطئة!";
-        return;
-      }
-      currentDriverPhone = phone;
-      currentDriverDocId = snap.docs[0].id;
-      localStorage.setItem("driver_phone", phone);
-      localStorage.setItem("driver_doc_id", currentDriverDocId);
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("driverDashboard").style.display = "block";
-      loadDriverBalance();
-      startLiveRides();
-    }
+    });
 
-    async function loadDriverBalance() {
-      if (currentDriverDocId) {
-        const driverDoc = await getDoc(doc(db, "drivers", currentDriverDocId));
-        if (driverDoc.exists()) {
-          currentBalance = driverDoc.data().balance || 0;
-        }
-      } else {
-        const q = query(collection(db, "drivers"), where("phone", "==", currentDriverPhone));
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const q = query(collection(db, "drivers"), where("uid", "==", user.uid));
         const snap = await getDocs(q);
         if (!snap.empty) {
           currentDriverDocId = snap.docs[0].id;
-          localStorage.setItem("driver_doc_id", currentDriverDocId);
+          currentDriverPhone = snap.docs[0].data().phone;
           currentBalance = snap.docs[0].data().balance || 0;
         }
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("driverDashboard").style.display = "block";
+        updateBalanceUI();
+        startLiveRides();
+      } else {
+        if (unsubscribe) unsubscribe();
+        stopLocationTracking();
+        document.getElementById("driverDashboard").style.display = "none";
+        document.getElementById("loginScreen").style.display = "flex";
       }
-      updateBalanceUI();
-    }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      if (unsubscribe) unsubscribe();
+      stopLocationTracking();
+      await signOut(auth);
+    });
 
     function updateBalanceUI() {
       document.getElementById("balanceAmount").innerText = `${currentBalance} أوقية`;
       const card = document.getElementById("balanceCard");
-      const alert = document.getElementById("alertBox");
+      const alertBox = document.getElementById("alertBox");
       if (currentBalance <= 50) {
         card.classList.add("balance-low");
-        alert.style.display = "block";
+        alertBox.style.display = "block";
       } else {
         card.classList.remove("balance-low");
-        alert.style.display = "none";
+        alertBox.style.display = "none";
       }
     }
 
-    window.showTab = function(tab) {
-      document.getElementById("tab-rides").style.display = tab === "rides" ? "block" : "none";
-      document.getElementById("tab-history").style.display = tab === "history" ? "block" : "none";
-      document.querySelectorAll(".tab-btn").forEach((btn, i) => {
-        btn.classList.toggle("active", (tab === "rides" && i === 0) || (tab === "history" && i === 1));
-      });
-      if (tab === "history") loadHistory();
+    // تتبع GPS
+    function startLocationTracking(rideId) {
+      if (!navigator.geolocation) return;
+      activeRideId = rideId;
+      document.getElementById("trackingBadge").style.display = "block";
+      stopLocationTracking();
+      locationInterval = setInterval(async () => {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          await updateDoc(doc(db, "rides", rideId), {
+            driver_lat: lat,
+            driver_lng: lng,
+            driver_updated: new Date().toISOString()
+          });
+        });
+      }, 10000);
     }
+
+    function stopLocationTracking() {
+      if (locationInterval) {
+        clearInterval(locationInterval);
+        locationInterval = null;
+      }
+      activeRideId = null;
+      document.getElementById("trackingBadge").style.display = "none";
+    }
+
+    document.getElementById("tabRides").addEventListener("click", () => {
+      document.getElementById("tab-rides").style.display = "block";
+      document.getElementById("tab-history").style.display = "none";
+      document.getElementById("tabRides").classList.add("active");
+      document.getElementById("tabHistory").classList.remove("active");
+    });
+
+    document.getElementById("tabHistory").addEventListener("click", () => {
+      document.getElementById("tab-rides").style.display = "none";
+      document.getElementById("tab-history").style.display = "block";
+      document.getElementById("tabRides").classList.remove("active");
+      document.getElementById("tabHistory").classList.add("active");
+      loadHistory();
+    });
 
     async function loadHistory() {
       const historyList = document.getElementById("historyList");
       historyList.innerHTML = '<div class="empty">جارٍ التحميل...</div>';
-
       const q = query(collection(db, "rides"), where("driver_phone", "==", currentDriverPhone));
       const snap = await getDocs(q);
-
-      if (snap.empty) {
-        historyList.innerHTML = '<div class="empty">لا توجد رحلات سابقة بعد 😊</div>';
-        return;
-      }
-
-      let totalRides = 0;
-      let totalEarned = 0;
-      let totalCommission = 0;
+      if (snap.empty) { historyList.innerHTML = '<div class="empty">لا توجد رحلات سابقة بعد 😊</div>'; return; }
+      let totalRides = 0, totalEarned = 0, totalCommission = 0;
       historyList.innerHTML = "";
-
       const rides = [];
-      snap.forEach(docSnap => rides.push({ id: docSnap.id, ...docSnap.data() }));
+      snap.forEach(d => rides.push({ id: d.id, ...d.data() }));
       rides.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
       rides.forEach(r => {
         const price = r.price || 0;
         const commission = r.commission || Math.round(price * COMMISSION);
         const earned = price - commission;
-        totalRides++;
-        totalEarned += earned;
-        totalCommission += commission;
-
+        totalRides++; totalEarned += earned; totalCommission += commission;
         const statusLabel = r.status === "arrived" ? "✅ مكتملة" : r.status === "on_the_way" ? "🚗 في الطريق" : r.status === "accepted" ? "✅ مقبولة" : "⏳ انتظار";
-
         historyList.innerHTML += `
           <div class="history-card ${r.status === 'arrived' ? 'arrived' : ''}">
             <div class="history-header">
@@ -460,29 +345,16 @@
             <div class="history-info">📍 من: ${r.from || "-"}</div>
             <div class="history-info">🏥 إلى: ${r.to || "-"}</div>
             <div class="history-info">📞 ${r.phone || "-"} &nbsp;|&nbsp; ${statusLabel}</div>
-            ${price > 0 ? `
-            <div class="history-price">
+            ${price > 0 ? `<div class="history-price">
               <span class="price-tag total">💰 ${price} أوقية</span>
               <span class="price-tag commission">موقع: ${commission} أوقية</span>
               <span class="price-tag earned">نصيبي: ${earned} أوقية</span>
             </div>` : ""}
-          </div>
-        `;
+          </div>`;
       });
-
       document.getElementById("statTotal").innerText = totalRides;
       document.getElementById("statEarned").innerText = totalEarned;
       document.getElementById("statCommission").innerText = totalCommission;
-    }
-
-    window.logout = function() {
-      if (unsubscribe) unsubscribe();
-      localStorage.removeItem("driver_phone");
-      localStorage.removeItem("driver_doc_id");
-      document.getElementById("driverDashboard").style.display = "none";
-      document.getElementById("loginScreen").style.display = "flex";
-      document.getElementById("phoneInput").value = "";
-      document.getElementById("passwordInput").value = "";
     }
 
     function statusBar(status) {
@@ -492,52 +364,39 @@
       steps.forEach((s, i) => {
         const isDone = steps.indexOf(status) > i;
         const isActive = status === s;
-        html += `<div class="status-step ${isActive ? "active" : ""} ${isDone ? "done" : ""}">
-          <div class="status-icon">${labels[i]}</div>
-        </div>`;
-        if (i < steps.length - 1) {
-          html += `<div class="status-line ${isDone ? "done" : ""}"></div>`;
-        }
+        html += `<div class="status-step ${isActive ? "active" : ""} ${isDone ? "done" : ""}"><div class="status-icon">${labels[i]}</div></div>`;
+        if (i < steps.length - 1) html += `<div class="status-line ${isDone ? "done" : ""}"></div>`;
       });
-      html += '</div>';
-      return html;
+      return html + '</div>';
     }
 
     function rideButtons(id, status, phone, mapUrl, price) {
       const commission = Math.round(price * COMMISSION);
-      if (status === "pending") {
-        return `
-          <div class="btn-group" id="btns-${id}">
-            <a class="btn-call" href="tel:${phone}">📞 اتصال</a>
-            <a class="btn-map" href="${mapUrl}" target="_blank">🗺️ موقع المريض</a>
-            <button class="btn-accept" onclick="acceptRide('${id}', ${commission})">✅ قبول (${commission} أوقية)</button>
-          </div>`;
-      } else if (status === "accepted") {
-        return `
-          <div class="btn-group" id="btns-${id}">
-            <a class="btn-call" href="tel:${phone}">📞 اتصال</a>
-            <a class="btn-map" href="${mapUrl}" target="_blank">🗺️ موقع المريض</a>
-            <button class="btn-onway" onclick="updateStatus('${id}', 'on_the_way')">🚗 في الطريق</button>
-          </div>`;
-      } else if (status === "on_the_way") {
-        return `
-          <div class="btn-group" id="btns-${id}">
-            <a class="btn-call" href="tel:${phone}">📞 اتصال</a>
-            <button class="btn-arrived" onclick="updateStatus('${id}', 'arrived')">🏥 وصلت للمريض</button>
-          </div>`;
-      } else {
-        return `<div class="btn-group"><span style="color:#2e7d32;font-weight:bold;">✅ تمت الرحلة بنجاح!</span></div>`;
-      }
+      if (status === "pending") return `
+        <div class="btn-group">
+          <a class="btn-call" href="tel:${phone}">📞 اتصال</a>
+          <a class="btn-map" href="${mapUrl}" target="_blank">🗺️ موقع المريض</a>
+          <button class="btn-accept" onclick="acceptRide('${id}', ${commission})">✅ قبول (${commission} أوقية)</button>
+        </div>`;
+      if (status === "accepted") return `
+        <div class="btn-group">
+          <a class="btn-call" href="tel:${phone}">📞 اتصال</a>
+          <a class="btn-map" href="${mapUrl}" target="_blank">🗺️ موقع المريض</a>
+          <button class="btn-onway" onclick="updateStatus('${id}', 'on_the_way')">🚗 في الطريق</button>
+        </div>`;
+      if (status === "on_the_way") return `
+        <div class="btn-group">
+          <a class="btn-call" href="tel:${phone}">📞 اتصال</a>
+          <button class="btn-arrived" onclick="updateStatus('${id}', 'arrived')">🏥 وصلت للمريض</button>
+        </div>`;
+      return `<div class="btn-group"><span style="color:#2e7d32;font-weight:bold;">✅ تمت الرحلة بنجاح!</span></div>`;
     }
 
     function startLiveRides() {
       const q = query(collection(db, "rides"), where("status", "in", ["pending", "accepted", "on_the_way"]));
       unsubscribe = onSnapshot(q, (snap) => {
         const list = document.getElementById("ridesList");
-        if (snap.empty) {
-          list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>';
-          return;
-        }
+        if (snap.empty) { list.innerHTML = '<div class="empty">لا توجد طلبات متاحة الآن 😊</div>'; return; }
         list.innerHTML = "";
         snap.forEach(docSnap => {
           const r = docSnap.data();
@@ -545,33 +404,22 @@
           const status = r.status || "pending";
           if (status !== "pending" && r.driver_phone !== currentDriverPhone) return;
           if (status === "pending" && currentBalance <= 0) return;
-
           const hasLocation = r.lat && r.lng;
-          const mapUrl = hasLocation
-            ? `https://maps.google.com/?q=${r.lat},${r.lng}`
-            : `https://maps.google.com/?q=${encodeURIComponent(r.from)}`;
+          const mapUrl = hasLocation ? `https://maps.google.com/?q=${r.lat},${r.lng}` : `https://maps.google.com/?q=${encodeURIComponent(r.from)}`;
           const price = r.price || 0;
           const commission = Math.round(price * COMMISSION);
-
           list.innerHTML += `
             <div class="ride-card" id="card-${id}">
               <h3>👤 ${r.name}</h3>
               <div class="ride-info">📍 من: <span>${r.from}</span></div>
               <div class="ride-info">🏥 إلى: <span>${r.to}</span></div>
               <div class="ride-info">📞 الهاتف: <span>${r.phone}</span></div>
-              ${price > 0 ? `
-              <div class="ride-price">
-                💰 السعر: <strong>${price} أوقية</strong>
-                &nbsp;|&nbsp; عمولة الموقع: <strong style="color:#c62828;">${commission} أوقية</strong>
-                &nbsp;|&nbsp; نصيبك: <strong>${price - commission} أوقية</strong>
-              </div>` : ""}
+              ${price > 0 ? `<div class="ride-price">💰 السعر: <strong>${price} أوقية</strong> &nbsp;|&nbsp; عمولة: <strong style="color:#c62828;">${commission} أوقية</strong> &nbsp;|&nbsp; نصيبك: <strong>${price - commission} أوقية</strong></div>` : ""}
               ${statusBar(status)}
               ${hasLocation ? `<iframe class="ride-map" src="https://maps.google.com/maps?q=${r.lat},${r.lng}&z=15&output=embed" frameborder="0" allowfullscreen></iframe>` : ""}
               ${rideButtons(id, status, r.phone, mapUrl, price)}
-            </div>
-          `;
+            </div>`;
         });
-
         if (list.innerHTML === "") {
           list.innerHTML = currentBalance <= 0
             ? '<div class="empty">⚠️ رصيدك نفد! تواصل مع الإدارة لشحن رصيدك.</div>'
@@ -590,10 +438,12 @@
       await updateDoc(doc(db, "drivers", currentDriverDocId), { balance: newBalance });
       currentBalance = newBalance;
       updateBalanceUI();
+      startLocationTracking(rideId);
     }
 
     window.updateStatus = async function(rideId, newStatus) {
       await updateDoc(doc(db, "rides", rideId), { status: newStatus, driver_phone: currentDriverPhone });
+      if (newStatus === "arrived") stopLocationTracking();
     }
   </script>
 </body>
