@@ -7,233 +7,544 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --primary: #1a1a2e; --primary-light: #16213e; --accent: #0A7C5C; --accent-light: #0d9e76; --gray: #f0f4f8; --text: #1a1a2e; --text-light: #6c757d; }
+    :root {
+      --primary: #1a1a2e; --primary-light: #16213e;
+      --accent: #0A7C5C; --accent-light: #0d9e76;
+      --gray: #f0f4f8; --text: #1a1a2e; --text-light: #6c757d;
+    }
     body { font-family: 'Cairo', sans-serif; background: var(--gray); min-height: 100vh; }
 
-    .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 20px; }
-    .login-card { background: white; border-radius: 28px; padding: 48px 36px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.3); }
+    /* ── شاشة تسجيل الدخول ── */
+    .login-screen {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      padding: 20px;
+    }
+    .login-card {
+      background: white; border-radius: 28px; padding: 48px 36px;
+      width: 100%; max-width: 400px; text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    }
     .login-logo { font-size: 52px; margin-bottom: 8px; }
     .login-card h2 { font-size: 26px; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
-    .login-card p { color: var(--text-light); font-size: 14px; margin-bottom: 28px; }
-    .login-input { width: 100%; padding: 14px 16px; border: 2px solid #e8ecf0; border-radius: 12px; font-size: 15px; font-family: 'Cairo', sans-serif; outline: none; color: var(--text); margin-bottom: 14px; transition: all 0.3s; background: #fafafa; text-align: center; }
-    .login-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; font-family: 'Cairo', sans-serif; cursor: pointer; }
+    .login-card > p { color: var(--text-light); font-size: 14px; margin-bottom: 28px; }
+    .login-input {
+      width: 100%; padding: 14px 16px; border: 2px solid #e8ecf0;
+      border-radius: 12px; font-size: 15px; font-family: 'Cairo', sans-serif;
+      outline: none; color: var(--text); margin-bottom: 14px;
+      transition: border-color 0.3s; background: #fafafa; text-align: center;
+    }
+    .login-input:focus { border-color: var(--accent); }
+    .login-btn {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white; border: none; border-radius: 12px;
+      font-size: 17px; font-weight: 700; font-family: 'Cairo', sans-serif; cursor: pointer;
+    }
+    #login-error { color: #e53935; font-size: 13px; margin-top: 10px; font-weight: 600; }
+    .register-link { margin-top: 16px; font-size: 13px; color: var(--text-light); }
+    .register-link a { color: var(--accent); font-weight: 700; text-decoration: none; }
 
-    header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; }
+    /* ── هيدر ── */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white; padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .header-left { font-size: 18px; font-weight: 700; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .driver-name-badge {
+      background: rgba(255,255,255,0.15); padding: 6px 14px;
+      border-radius: 20px; font-size: 13px; font-weight: 600;
+    }
+    #logoutBtn {
+      background: rgba(255,255,255,0.2); color: white; border: none;
+      padding: 7px 14px; border-radius: 10px; font-family: 'Cairo', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
 
+    /* ── الرصيد ── */
     .container { max-width: 700px; margin: 24px auto; padding: 0 16px; }
+    .balance-card {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      border-radius: 20px; padding: 24px 28px; margin-bottom: 20px;
+      color: white; display: flex; justify-content: space-between; align-items: center;
+    }
+    .balance-label { font-size: 13px; opacity: 0.85; margin-bottom: 4px; }
+    .balance-amount { font-size: 34px; font-weight: 900; }
+    .balance-sub { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+    .status-toggle {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+    }
+    .status-label { font-size: 12px; opacity: 0.85; }
+    .toggle-btn {
+      padding: 8px 18px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.15); color: white;
+      font-family: 'Cairo', sans-serif; font-size: 13px;
+      font-weight: 700; cursor: pointer; transition: all 0.3s;
+    }
+    .toggle-btn.offline { background: rgba(0,0,0,0.25); border-color: rgba(255,255,255,0.3); }
 
-    .balance-card { background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 20px; padding: 24px; margin-bottom: 20px; color: white; display: flex; justify-content: space-between; }
+    /* ── تابز ── */
+    .tabs {
+      display: flex; gap: 8px; margin-bottom: 20px;
+      background: white; border-radius: 14px; padding: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .tab-btn {
+      flex: 1; padding: 11px; border: none; border-radius: 10px;
+      font-weight: 700; font-family: 'Cairo', sans-serif; font-size: 14px;
+      cursor: pointer; color: var(--text-light); background: transparent; transition: all 0.3s;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white; box-shadow: 0 4px 12px rgba(26,26,46,0.25);
+    }
 
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: white; border-radius: 14px; padding: 6px; }
+    /* ── بطاقة الطلب ── */
+    .ride-card {
+      background: white; border-radius: 18px; padding: 20px 22px;
+      margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-right: 4px solid var(--accent);
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+    .ride-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .ride-name { font-size: 16px; font-weight: 700; color: var(--text); }
+    .ride-phone { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+    .ride-price-badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: white; padding: 6px 14px; border-radius: 20px;
+      font-size: 15px; font-weight: 900;
+    }
+    .ride-details { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .ride-detail { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-light); }
+    .ride-detail strong { color: var(--text); }
+    .ride-actions { display: flex; gap: 10px; }
+    .btn-accept {
+      flex: 2; padding: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: white; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 700; font-family: 'Cairo', sans-serif;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .btn-accept:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(10,124,92,0.4); }
+    .btn-reject {
+      flex: 1; padding: 12px; background: #fff0f0;
+      color: #e53935; border: 2px solid #ffcdd2; border-radius: 12px;
+      font-size: 14px; font-weight: 700; font-family: 'Cairo', sans-serif;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .btn-reject:hover { background: #ffebee; }
+    .btn-finish {
+      width: 100%; padding: 12px;
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      color: white; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 700; font-family: 'Cairo', sans-serif;
+      cursor: pointer; margin-top: 10px;
+    }
 
-    .tab-btn { flex: 1; padding: 11px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+    /* ── بطاقة السجل ── */
+    .driver-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; margin-bottom: 20px;
+    }
+    .driver-stat {
+      background: white; padding: 18px 12px; text-align: center;
+      border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .stat-value { font-size: 22px; font-weight: 900; color: var(--accent); }
+    .stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+    .history-card {
+      background: white; border-radius: 16px; padding: 18px 20px;
+      margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .history-name { font-weight: 700; font-size: 14px; }
+    .history-date { font-size: 11px; color: var(--text-light); }
+    .history-route { font-size: 13px; color: var(--text-light); line-height: 1.8; }
+    .history-footer {
+      display: flex; justify-content: space-between; margin-top: 10px;
+      padding-top: 10px; border-top: 1px solid #f0f0f0; font-size: 13px;
+    }
+    .profit-text { color: var(--accent); font-weight: 700; }
+    .commission-text { color: #e53935; font-weight: 600; }
 
-    .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
+    .empty {
+      text-align: center; padding: 60px 20px; color: #bbb;
+      font-size: 15px; font-weight: 600;
+    }
+    .empty-icon { font-size: 48px; display: block; margin-bottom: 12px; }
 
-    .ride-card { background: white; border-radius: 18px; padding: 22px; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-
-    .history-card { background: white; border-radius: 18px; padding: 20px; margin-bottom: 12px; }
-
-    .driver-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-
-    .driver-stat { background: white; padding: 16px; text-align: center; border-radius: 14px; }
-
-    .empty { text-align: center; padding: 60px 20px; color: #bbb; }
+    .loading-spin { display: inline-block; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
+<!-- ── شاشة تسجيل الدخول ── -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="login-logo">🚙</div>
     <h2>لوحة السائق</h2>
-    <input class="login-input" id="phoneInput" placeholder="رقم الهاتف">
+    <p>أدخل بياناتك للدخول</p>
+    <input class="login-input" id="phoneInput" type="tel" placeholder="رقم الهاتف">
     <input class="login-input" id="passwordInput" type="password" placeholder="كلمة المرور">
-    <button class="login-btn" id="loginBtn">دخول</button>
+    <button class="login-btn" id="loginBtn">دخول 🚀</button>
     <p id="login-error"></p>
+    <div class="register-link">ليس لديك حساب؟ <a href="driver-register.html">سجّل الآن</a></div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- ── لوحة التحكم ── -->
 <div id="driverDashboard" style="display:none;">
 
-<header>
-  <div>🚙 وصّلني</div>
-  <button id="logoutBtn">خروج</button>
-</header>
-
-<div class="container">
-
-  <div class="balance-card">
-    <div>
-      <div>رصيدك</div>
-      <div id="balanceAmount">---</div>
+  <header>
+    <div class="header-left">🚗 وصّلني</div>
+    <div class="header-right">
+      <span class="driver-name-badge" id="driverNameBadge">---</span>
+      <button id="logoutBtn">خروج</button>
     </div>
-  </div>
+  </header>
 
-  <div class="tabs">
-    <button class="tab-btn active" id="tabRides">الطلبات</button>
-    <button class="tab-btn" id="tabHistory">السجل</button>
-  </div>
+  <div class="container">
 
-  <div id="tab-rides">
-    <div id="ridesList" class="empty">جارٍ التحميل...</div>
-  </div>
-
-  <div id="tab-history" style="display:none;">
-    
-    <div class="driver-stats">
-      <div class="driver-stat"><div id="statTotal">0</div><div>رحلات</div></div>
-      <div class="driver-stat"><div id="statEarned">0</div><div>أرباح</div></div>
-      <div class="driver-stat"><div id="statCommission">0</div><div>عمولة</div></div>
+    <!-- الرصيد والحالة -->
+    <div class="balance-card">
+      <div>
+        <div class="balance-label">رصيدك الحالي</div>
+        <div class="balance-amount" id="balanceAmount">0 <span style="font-size:18px">أوقية</span></div>
+        <div class="balance-sub" id="driverArea">---</div>
+      </div>
+      <div class="status-toggle">
+        <div class="status-label">حالتك</div>
+        <button class="toggle-btn" id="statusToggleBtn" onclick="toggleStatus()">🟢 متاح</button>
+      </div>
     </div>
 
-    <div id="historyList" class="empty">جارٍ التحميل...</div>
+    <!-- التابز -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tabRides" onclick="switchTab('rides')">🚨 الطلبات الجديدة</button>
+      <button class="tab-btn" id="tabMine" onclick="switchTab('mine')">🚗 طلباتي</button>
+      <button class="tab-btn" id="tabHistory" onclick="switchTab('history')">📊 السجل</button>
+    </div>
+
+    <!-- طلبات جديدة -->
+    <div id="tab-rides">
+      <div id="ridesList"><div class="empty"><span class="empty-icon">⏳</span>جارٍ التحميل...</div></div>
+    </div>
+
+    <!-- طلباتي المقبولة -->
+    <div id="tab-mine" style="display:none;">
+      <div id="myRidesList"><div class="empty"><span class="empty-icon">🚗</span>لا توجد طلبات مقبولة حالياً</div></div>
+    </div>
+
+    <!-- السجل -->
+    <div id="tab-history" style="display:none;">
+      <div class="driver-stats">
+        <div class="driver-stat"><div class="stat-value" id="statTotal">0</div><div class="stat-label">رحلات</div></div>
+        <div class="driver-stat"><div class="stat-value" id="statEarned">0</div><div class="stat-label">أرباحي (أوقية)</div></div>
+        <div class="driver-stat"><div class="stat-value" id="statCommission">0</div><div class="stat-label">عمولة (أوقية)</div></div>
+      </div>
+      <div id="historyList"><div class="empty"><span class="empty-icon">📋</span>لا توجد رحلات منتهية</div></div>
+    </div>
 
   </div>
-
-</div>
 </div>
 
 <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, getDocs, doc, updateDoc,
+    query, where, onSnapshot, getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import {
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  // ── Firebase Config ──
+  const firebaseConfig = {
+    apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
+    authDomain: "wassalni-fa958.firebaseapp.com",
+    projectId: "wassalni-fa958",
+    storageBucket: "wassalni-fa958.firebasestorage.app",
+    messagingSenderId: "63888443959",
+    appId: "1:63888443959:web:3a28bf29c34c1f951d0db2"
+  };
 
-const app = initializeApp({
-  apiKey: "XXX",
-  authDomain: "XXX",
-  projectId: "XXX"
-});
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+  const auth= getAuth(app);
 
-const db = getFirestore(app);
-const auth = getAuth(app);
+  const COMMISSION = 0.40;
 
-const COMMISSION = 0.40;
+  let currentDriverPhone  = "";
+  let currentDriverDocId  = "";
+  let currentDriverName   = "";
+  let currentDriverStatus = "available";
+  let currentBalance      = 0;
+  let unsubPending        = null;
+  let unsubMine           = null;
 
-let currentDriverPhone = "";
-let currentDriverDocId = "";
-let currentBalance = 0;
+  // ── تسجيل الدخول ──
+  document.getElementById("loginBtn").onclick = async () => {
+    const phone = document.getElementById("phoneInput").value.trim();
+    const pass  = document.getElementById("passwordInput").value.trim();
+    const errEl = document.getElementById("login-error");
 
-let unsubscribe = null;
+    if (!phone || !pass) { errEl.innerText = "⚠️ أدخل رقم الهاتف وكلمة المرور"; return; }
 
-/* LOGIN */
-document.getElementById("loginBtn").onclick = async () => {
-  const phone = document.getElementById("phoneInput").value;
-  const pass = document.getElementById("passwordInput").value;
+    document.getElementById("loginBtn").innerText = "⏳ جارٍ الدخول...";
+    try {
+      await signInWithEmailAndPassword(auth, phone + "@wassalni.com", pass);
+    } catch (e) {
+      errEl.innerText = "❌ رقم الهاتف أو كلمة المرور غير صحيحة";
+      document.getElementById("loginBtn").innerText = "دخول 🚀";
+    }
+  };
 
-  try {
-    await signInWithEmailAndPassword(auth, phone+"@wassalni.com", pass);
-  } catch {
-    document.getElementById("login-error").innerText = "خطأ في الدخول";
-  }
-};
-
-/* AUTH */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
-
-  const q = query(collection(db, "drivers"), where("uid","==",user.uid));
-  const snap = await getDocs(q);
-
-  if (!snap.empty) {
-    currentDriverPhone = snap.docs[0].data().phone;
-    currentBalance = snap.docs[0].data().balance || 0;
-    currentDriverDocId = snap.docs[0].id;
-  }
-
-  document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("driverDashboard").style.display = "block";
-
-  startLiveRides();
-});
-
-/* TAB */
-document.getElementById("tabHistory").onclick = () => {
-  document.getElementById("tab-history").style.display = "block";
-  document.getElementById("tab-rides").style.display = "none";
-  loadHistory();
-};
-
-/* ❌ FIXED LOAD HISTORY */
-async function loadHistory() {
-
-  const historyList = document.getElementById("historyList");
-  historyList.innerHTML = '<div class="empty">جارٍ التحميل...</div>';
-
-  const q = query(collection(db,"rides"), where("driver_phone","==",currentDriverPhone));
-  const snap = await getDocs(q);
-
-  if (snap.empty) {
-    historyList.innerHTML = '<div class="empty">لا توجد رحلات</div>';
-    return;
-  }
-
-  let total=0, earned=0, commission=0;
-
-  const rides = [];
-  snap.forEach(d => rides.push(d.data()));
-
-  rides.sort((a,b)=> new Date(b.createdAt||0)-new Date(a.createdAt||0));
-
-  historyList.innerHTML = "";
-
-  rides.forEach(r => {
-
-    const price = r.price || 0;
-    const c = Math.round(price * COMMISSION);
-    const e = price - c;
-
-    total++;
-    earned += e;
-    commission += c;
-
-    historyList.innerHTML += `
-      <div class="history-card">
-        <div>👤 ${r.name||"-"}</div>
-        <div>📍 ${r.from||"-"}</div>
-        <div>🏥 ${r.to||"-"}</div>
-        <div>💰 ${price} | عمولة ${c} | ربح ${e}</div>
-      </div>
-    `;
-  });
-
-  document.getElementById("statTotal").innerText = total;
-  document.getElementById("statEarned").innerText = earned;
-  document.getElementById("statCommission").innerText = commission;
-}
-
-/* LIVE RIDES (مختصر) */
-function startLiveRides() {
-  const q = query(collection(db,"rides"), where("status","in",["pending"]));
-
-  unsubscribe = onSnapshot(q,(snap)=>{
-    const list = document.getElementById("ridesList");
-
-    if (snap.empty) {
-      list.innerHTML = "لا يوجد طلبات";
+  // ── تتبع حالة المصادقة ──
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      document.getElementById("loginScreen").style.display = "flex";
+      document.getElementById("driverDashboard").style.display = "none";
       return;
     }
 
-    list.innerHTML = "";
+    // جلب بيانات السائق
+    const q    = query(collection(db, "drivers"), where("uid", "==", user.uid));
+    const snap = await getDocs(q);
 
-    snap.forEach(d=>{
-      const r = d.data();
+    if (snap.empty) {
+      await signOut(auth);
+      document.getElementById("login-error").innerText = "❌ لم يُعثر على حساب سائق.";
+      return;
+    }
 
-      list.innerHTML += `
-        <div class="ride-card">
-          <div>👤 ${r.name}</div>
-          <div>📍 ${r.from}</div>
-          <div>🏥 ${r.to}</div>
-        </div>
-      `;
-    });
+    const driverData    = snap.docs[0].data();
+    currentDriverPhone  = driverData.phone;
+    currentDriverDocId  = snap.docs[0].id;
+    currentDriverName   = driverData.name;
+    currentBalance      = driverData.balance || 0;
+    currentDriverStatus = driverData.status  || "available";
+
+    // عرض البيانات
+    document.getElementById("driverNameBadge").innerText = currentDriverName;
+    document.getElementById("balanceAmount").innerHTML   = `${currentBalance} <span style="font-size:18px">أوقية</span>`;
+    document.getElementById("driverArea").innerText      = driverData.area || "";
+    updateStatusBtn(currentDriverStatus);
+
+    document.getElementById("loginScreen").style.display    = "none";
+    document.getElementById("driverDashboard").style.display = "block";
+
+    startLiveRides();
+    startMyRides();
   });
-}
 
+  // ── تبديل الحالة ──
+  window.toggleStatus = async function() {
+    const newStatus = currentDriverStatus === "available" ? "offline" : "available";
+    await updateDoc(doc(db, "drivers", currentDriverDocId), { status: newStatus });
+    currentDriverStatus = newStatus;
+    updateStatusBtn(newStatus);
+  };
+
+  function updateStatusBtn(status) {
+    const btn = document.getElementById("statusToggleBtn");
+    if (status === "available") {
+      btn.innerText = "🟢 متاح";
+      btn.classList.remove("offline");
+    } else {
+      btn.innerText = "🔴 غير متاح";
+      btn.classList.add("offline");
+    }
+  }
+
+  // ── تبديل التابز ──
+  window.switchTab = function(tab) {
+    ["rides","mine","history"].forEach(t => {
+      document.getElementById(`tab-${t}`).style.display  = t === tab ? "block" : "none";
+      document.getElementById(`tab${capitalize(t)}`).classList.toggle("active", t === tab);
+    });
+    if (tab === "history") loadHistory();
+  };
+
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // ── الطلبات الجديدة (real-time) ──
+  function startLiveRides() {
+    if (unsubPending) unsubPending();
+    const q = query(collection(db, "rides"), where("status", "==", "pending"));
+    unsubPending = onSnapshot(q, (snap) => {
+      const list = document.getElementById("ridesList");
+      if (snap.empty) {
+        list.innerHTML = `<div class="empty"><span class="empty-icon">✅</span>لا توجد طلبات جديدة حالياً</div>`;
+        return;
+      }
+      list.innerHTML = "";
+      snap.forEach(d => {
+        const r = d.data();
+        const mapLink = r.lat ? `https://maps.google.com/?q=${r.lat},${r.lng}` : null;
+        list.innerHTML += `
+          <div class="ride-card">
+            <div class="ride-header">
+              <div>
+                <div class="ride-name">👤 ${r.name || "-"}</div>
+                <div class="ride-phone">📞 ${r.phone || "-"}</div>
+              </div>
+              <div class="ride-price-badge">${r.price || 0} أوقية</div>
+            </div>
+            <div class="ride-details">
+              <div class="ride-detail">📍 <strong>من:</strong> ${r.from || "-"}</div>
+              <div class="ride-detail">🏥 <strong>إلى:</strong> ${r.to || "-"}</div>
+              <div class="ride-detail">📏 <strong>المسافة:</strong> ${r.distance ? r.distance.toFixed(1) + " كم" : "-"}</div>
+              ${mapLink ? `<div class="ride-detail">🗺️ <a href="${mapLink}" target="_blank" style="color:var(--accent);font-weight:700;">عرض الموقع على الخريطة</a></div>` : ""}
+            </div>
+            <div class="ride-actions">
+              <button class="btn-accept" onclick="acceptRide('${d.id}')">✅ قبول الطلب</button>
+              <button class="btn-reject" onclick="rejectRide('${d.id}')">✗ رفض</button>
+            </div>
+          </div>`;
+      });
+    });
+  }
+
+  // ── طلباتي المقبولة (real-time) ──
+  function startMyRides() {
+    if (unsubMine) unsubMine();
+    const q = query(collection(db, "rides"),
+      where("status", "==", "accepted"),
+      where("driver_phone", "==", currentDriverPhone)
+    );
+    unsubMine = onSnapshot(q, (snap) => {
+      const list = document.getElementById("myRidesList");
+      if (snap.empty) {
+        list.innerHTML = `<div class="empty"><span class="empty-icon">🚗</span>لا توجد طلبات مقبولة حالياً</div>`;
+        return;
+      }
+      list.innerHTML = "";
+      snap.forEach(d => {
+        const r = d.data();
+        const commission = Math.round((r.price || 0) * COMMISSION);
+        const profit     = (r.price || 0) - commission;
+        list.innerHTML += `
+          <div class="ride-card" style="border-right-color:#1976d2">
+            <div class="ride-header">
+              <div>
+                <div class="ride-name">👤 ${r.name || "-"}</div>
+                <div class="ride-phone">📞 ${r.phone || "-"}</div>
+              </div>
+              <div class="ride-price-badge" style="background:linear-gradient(135deg,#1565c0,#1976d2)">${r.price || 0} أوقية</div>
+            </div>
+            <div class="ride-details">
+              <div class="ride-detail">📍 <strong>من:</strong> ${r.from || "-"}</div>
+              <div class="ride-detail">🏥 <strong>إلى:</strong> ${r.to || "-"}</div>
+              <div class="ride-detail">💰 <strong>ربحك:</strong> ${profit} أوقية (بعد العمولة ${commission})</div>
+            </div>
+            <button class="btn-finish" onclick="finishRide('${d.id}', ${r.price || 0})">✅ إنهاء الرحلة</button>
+          </div>`;
+      });
+    });
+  }
+
+  // ── قبول طلب ──
+  window.acceptRide = async function(rideId) {
+    try {
+      await updateDoc(doc(db, "rides", rideId), {
+        status: "accepted",
+        driver_phone: currentDriverPhone,
+        driver_name:  currentDriverName,
+        driver_doc_id: currentDriverDocId,
+        acceptedAt: new Date().toISOString()
+      });
+    } catch(e) { alert("❌ حدث خطأ أثناء قبول الطلب"); }
+  };
+
+  // ── رفض طلب (تجاهله فقط، لا يُحذف) ──
+  window.rejectRide = async function(rideId) {
+    // نضيف رقم السائق لقائمة المرفوضين حتى لا يظهر له مجدداً
+    const rideRef = doc(db, "rides", rideId);
+    const rideSnap = await getDoc(rideRef);
+    const rejected = rideSnap.data().rejectedBy || [];
+    await updateDoc(rideRef, { rejectedBy: [...rejected, currentDriverPhone] });
+  };
+
+  // ── إنهاء رحلة وتحديث الرصيد ──
+  window.finishRide = async function(rideId, price) {
+    const commission = Math.round(price * COMMISSION);
+    const profit     = price - commission;
+    try {
+      await updateDoc(doc(db, "rides", rideId), {
+        status: "done",
+        finishedAt: new Date().toISOString()
+      });
+      // تحديث رصيد السائق
+      const newBalance = currentBalance + profit;
+      await updateDoc(doc(db, "drivers", currentDriverDocId), { balance: newBalance });
+      currentBalance = newBalance;
+      document.getElementById("balanceAmount").innerHTML = `${newBalance} <span style="font-size:18px">أوقية</span>`;
+    } catch(e) { alert("❌ حدث خطأ أثناء إنهاء الرحلة"); }
+  };
+
+  // ── السجل ──
+  async function loadHistory() {
+    const historyList = document.getElementById("historyList");
+    historyList.innerHTML = `<div class="empty"><span class="loading-spin">⏳</span> جارٍ التحميل...</div>`;
+
+    const q    = query(collection(db, "rides"),
+      where("driver_phone", "==", currentDriverPhone),
+      where("status", "==", "done")
+    );
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      historyList.innerHTML = `<div class="empty"><span class="empty-icon">📋</span>لا توجد رحلات منتهية</div>`;
+      document.getElementById("statTotal").innerText      = 0;
+      document.getElementById("statEarned").innerText     = 0;
+      document.getElementById("statCommission").innerText = 0;
+      return;
+    }
+
+    let total = 0, earned = 0, commission = 0;
+    const rides = [];
+    snap.forEach(d => rides.push(d.data()));
+    rides.sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
+
+    historyList.innerHTML = "";
+    rides.forEach(r => {
+      const price  = r.price || 0;
+      const c      = Math.round(price * COMMISSION);
+      const e      = price - c;
+      total++; earned += e; commission += c;
+
+      const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString("ar-EG") : "-";
+      historyList.innerHTML += `
+        <div class="history-card">
+          <div class="history-header">
+            <span class="history-name">👤 ${r.name || "-"}</span>
+            <span class="history-date">${date}</span>
+          </div>
+          <div class="history-route">
+            📍 ${r.from || "-"} &rarr; 🏥 ${r.to || "-"}
+          </div>
+          <div class="history-footer">
+            <span class="profit-text">ربحك: ${e} أوقية</span>
+            <span class="commission-text">عمولة: ${c} أوقية</span>
+          </div>
+        </div>`;
+    });
+
+    document.getElementById("statTotal").innerText      = total;
+    document.getElementById("statEarned").innerText     = earned;
+    document.getElementById("statCommission").innerText = commission;
+  }
+
+  // ── تسجيل الخروج ──
+  document.getElementById("logoutBtn").onclick = async () => {
+    if (unsubPending) unsubPending();
+    if (unsubMine)    unsubMine();
+    await signOut(auth);
+  };
 </script>
 
 </body>
