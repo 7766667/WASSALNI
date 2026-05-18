@@ -142,10 +142,49 @@
         msg.style.color = "#e53935"; msg.innerText = "⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل."; return;
       }
 
-      const existing = await getDocs(query(collection(db, "drivers"), where("phone", "==", phone)));
-      if (!existing.empty) {
-        msg.style.color = "#e53935"; msg.innerText = "⚠️ رقم الهاتف مسجل مسبقاً!"; return;
-      }
+      try {
+  btn.innerHTML = '<span class="loading">⏳</span> جارٍ التسجيل...';
+  btn.disabled = true;
+
+  const email = `${phone}@wassalni.com`;
+
+  // 1. إنشاء الحساب أولاً
+  const userCred = await createUserWithEmailAndPassword(auth, email, password);
+  const uid = userCred.user.uid;
+
+  // 2. بعد نجاح الحساب نضيف Firestore
+  const docRef = await addDoc(collection(db, "drivers"), {
+    uid,
+    name,
+    phone,
+    car_model,
+    plate,
+    area,
+    balance: 0,
+    isVerified: false,
+    status: "available",
+    registeredAt: new Date().toISOString()
+  });
+
+  msg.style.color = "#0A7C5C";
+  msg.innerText = "✅ تم التسجيل بنجاح! جارٍ نقلك...";
+
+  setTimeout(() => {
+    window.location.href = "driver-dashboard.html";
+  }, 1500);
+
+} catch (error) {
+  btn.innerHTML = "تسجيل الآن 🚀";
+  btn.disabled = false;
+
+  if (error.code === "auth/email-already-in-use") {
+    msg.style.color = "#e53935";
+    msg.innerText = "⚠️ هذا الرقم مسجل مسبقاً!";
+  } else {
+    msg.style.color = "#e53935";
+    msg.innerText = "❌ حدث خطأ: " + error.message;
+  }
+}
 
       btn.innerHTML = '<span class="loading">⏳</span> جارٍ التسجيل...';
       btn.disabled = true;
