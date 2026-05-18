@@ -291,15 +291,24 @@
         totalRides++; totalEarned += earned; totalCommission += commission;
         const statusLabel = r.status === "arrived" ? "✅ مكتملة" : r.status === "on_the_way" ? "🚗 في الطريق" : r.status === "accepted" ? "✅ مقبولة" : "⏳ انتظار";
         historyList.innerHTML += `
-          <div class="history-card ${r.status === 'arrived' ? 'arrived' : ''}">
-            <div class="history-header">
-              <div class="history-name">👤 ${r.name||"-"}</div>
-              <div class="history-date">${r.createdAt ? r.createdAt.substring(0,10) : "-"}</div>
-            </div>
-            <div class="history-info">📍 ${r.from||"-"}</div>
-            <div class="history-info">🏥 ${r.to||"-"}</div>
-            <div class="history-info">📞 ${r.phone||"-"} · ${statusLabel}</div>
-            ""
+          historyList.innerHTML += `
+  <div class="history-card ${r.status === 'arrived' ? 'arrived' : ''}">
+    <div class="history-header">
+      <div class="history-name">👤 ${r.name || "-"}</div>
+      <div class="history-date">${r.createdAt ? r.createdAt.substring(0,10) : "-"}</div>
+    </div>
+
+    <div class="history-info">📍 ${r.from || "-"}</div>
+    <div class="history-info">🏥 ${r.to || "-"}</div>
+    <div class="history-info">📞 ${r.phone || "-"} · ${statusLabel}</div>
+
+    <div class="history-price">
+      <span class="price-tag total">💰 ${price}</span>
+      <span class="price-tag commission">- ${commission}</span>
+      <span class="price-tag earned">+ ${earned}</span>
+    </div>
+  </div>
+`;
       });
       document.getElementById("statTotal").innerText = totalRides;
       document.getElementById("statEarned").innerText = totalEarned;
