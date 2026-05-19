@@ -14,7 +14,7 @@
     }
     body { font-family: 'Cairo', sans-serif; background: var(--gray); min-height: 100vh; color: var(--text); }
 
-    /* ── شاشة الدخول ── */
+    /* ── LOGIN ── */
     .login-overlay {
       position: fixed; inset: 0; z-index: 999;
       background: linear-gradient(135deg, #1a1a2e, #16213e);
@@ -41,7 +41,7 @@
     }
     #loginError { color: var(--red); font-size: 13px; margin-top: 10px; font-weight: 600; }
 
-    /* ── هيدر ── */
+    /* ── HEADER ── */
     header {
       background: linear-gradient(135deg, var(--primary-dark), var(--primary));
       color: white; padding: 16px 24px;
@@ -63,35 +63,46 @@
       font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
     }
 
-    /* ── إحصائيات ── */
+    /* ── TABS ── */
+    .main-tabs {
+      display: flex; background: white; border-bottom: 2px solid #e8ecf0;
+      padding: 0 24px; gap: 4px;
+    }
+    .main-tab {
+      padding: 14px 20px; border: none; background: transparent;
+      font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700;
+      color: var(--text-light); cursor: pointer; border-bottom: 3px solid transparent;
+      margin-bottom: -2px; transition: all 0.3s;
+    }
+    .main-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* ── CONTAINER ── */
     .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+
+    /* ── STATS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
     .stat-card {
       background: white; border-radius: 16px; padding: 20px;
       text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.07);
       border-top: 4px solid var(--primary);
     }
-    .stat-card.red   { border-top-color: var(--red); }
-    .stat-card.blue  { border-top-color: var(--blue); }
-    .stat-card.orange{ border-top-color: var(--orange); }
+    .stat-card.red    { border-top-color: var(--red); }
+    .stat-card.blue   { border-top-color: var(--blue); }
+    .stat-card.orange { border-top-color: var(--orange); }
     .stat-value { font-size: 28px; font-weight: 900; color: var(--primary); }
-    .stat-card.red   .stat-value { color: var(--red); }
-    .stat-card.blue  .stat-value { color: var(--blue); }
+    .stat-card.red    .stat-value { color: var(--red); }
+    .stat-card.blue   .stat-value { color: var(--blue); }
     .stat-card.orange .stat-value { color: var(--orange); }
     .stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; }
 
-    /* ── فلتر وبحث ── */
-    .toolbar {
-      display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
-    }
+    /* ── TOOLBAR ── */
+    .toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
     .filter-btn {
       padding: 9px 18px; border-radius: 20px; border: 2px solid #e0e0e0;
       background: white; font-family: 'Cairo', sans-serif; font-size: 13px;
       font-weight: 600; color: var(--text-light); cursor: pointer; transition: all 0.3s;
     }
-    .filter-btn.active {
-      background: var(--primary); color: white; border-color: var(--primary);
-    }
+    .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
     .search-box {
       margin-right: auto; padding: 9px 16px; border: 2px solid #e0e0e0;
       border-radius: 20px; font-family: 'Cairo', sans-serif; font-size: 13px;
@@ -99,7 +110,7 @@
     }
     .search-box:focus { border-color: var(--primary); }
 
-    /* ── بطاقة الطلب ── */
+    /* ── RIDE CARD ── */
     .ride-card {
       background: white; border-radius: 18px; padding: 20px 22px;
       margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.07);
@@ -110,25 +121,18 @@
     .ride-card.accepted { border-right-color: var(--blue); }
     .ride-card.done     { border-right-color: var(--primary); }
     .ride-card.cancel   { border-right-color: var(--red); }
-
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-    .client-info .client-name { font-size: 16px; font-weight: 700; }
-    .client-info .client-phone { font-size: 13px; color: var(--text-light); margin-top: 2px; }
-    .badge {
-      padding: 5px 12px; border-radius: 20px; font-size: 12px;
-      font-weight: 700; color: white;
-    }
+    .client-name { font-size: 16px; font-weight: 700; }
+    .client-phone { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+    .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: white; }
     .badge.pending  { background: var(--orange); }
     .badge.accepted { background: var(--blue); }
     .badge.done     { background: var(--primary); }
     .badge.cancel   { background: var(--red); }
-
     .card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
     .info-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
-    .info-item .label { color: var(--text-light); }
-    .info-item .value { font-weight: 600; color: var(--text); }
-    .map-link { color: var(--primary); font-weight: 700; text-decoration: none; font-size: 13px; }
-
+    .info-item .lbl { color: var(--text-light); }
+    .info-item .val { font-weight: 600; }
     .driver-assign {
       background: #f8f9fa; border-radius: 10px; padding: 10px 14px;
       margin-bottom: 14px; font-size: 13px; display: flex; align-items: center; gap: 8px;
@@ -142,39 +146,77 @@
       border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 13px;
       font-weight: 700; cursor: pointer;
     }
-
     .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .btn {
       padding: 9px 16px; border-radius: 10px; border: none;
       font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
-      cursor: pointer; transition: all 0.3s;
+      cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block;
     }
     .btn:hover { transform: translateY(-1px); }
-    .btn-accept  { background: #e8f5e9; color: var(--primary); }
-    .btn-finish  { background: #e3f2fd; color: var(--blue); }
-    .btn-cancel  { background: #ffebee; color: var(--red); }
-    .btn-delete  { background: #fce4ec; color: #c62828; }
-    .btn-wa      { background: #e8f5e9; color: #128C7E; }
+    .btn-accept { background: #e8f5e9; color: var(--primary); }
+    .btn-finish { background: #e3f2fd; color: var(--blue); }
+    .btn-cancel { background: #ffebee; color: var(--red); }
+    .btn-delete { background: #fce4ec; color: #c62828; }
+    .btn-wa     { background: #e8f5e9; color: #128C7E; }
+    .date-text  { font-size: 11px; color: var(--text-light); margin-top: 10px; }
 
-    .date-text { font-size: 11px; color: var(--text-light); margin-top: 10px; }
+    /* ── DRIVER REGISTRATION FORM ── */
+    .reg-card {
+      background: white; border-radius: 20px; padding: 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .reg-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .reg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .reg-input-group { display: flex; flex-direction: column; gap: 6px; }
+    .reg-input-group label { font-size: 13px; font-weight: 600; color: var(--text-light); }
+    .reg-input-group input {
+      padding: 12px 14px; border: 2px solid #e8ecf0; border-radius: 10px;
+      font-family: 'Cairo', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s;
+    }
+    .reg-input-group input:focus { border-color: var(--primary); }
+    .reg-submit {
+      margin-top: 20px; width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+      color: white; border: none; border-radius: 12px;
+      font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .reg-submit:hover { transform: translateY(-2px); }
+    .reg-submit:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    #regMsg { text-align: center; margin-top: 12px; font-size: 14px; font-weight: 600; }
+
+    /* ── DRIVERS LIST ── */
+    .driver-list-card {
+      background: white; border-radius: 18px; padding: 20px 22px;
+      margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+      display: flex; justify-content: space-between; align-items: center;
+      border-right: 4px solid var(--primary);
+    }
+    .driver-list-card.unverified { border-right-color: var(--orange); }
+    .driver-info .d-name  { font-weight: 700; font-size: 15px; }
+    .driver-info .d-sub   { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+    .driver-actions { display: flex; gap: 8px; }
+    .btn-verify   { background: #e8f5e9; color: var(--primary); }
+    .btn-unverify { background: #fff3e0; color: var(--orange); }
 
     .empty { text-align: center; padding: 60px 20px; color: #bbb; font-size: 15px; }
     .empty-icon { font-size: 48px; display: block; margin-bottom: 12px; }
 
     @media(max-width:600px) {
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
       .card-body  { grid-template-columns: 1fr; }
+      .reg-grid   { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── شاشة تسجيل الدخول ── -->
+<!-- LOGIN -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <div style="font-size:48px;margin-bottom:12px">🚑</div>
     <h2>لوحة تحكم وصّلني</h2>
-    <p>للأدمن فقط - أدخل بياناتك للدخول</p>
+    <p>للأدمن فقط</p>
     <input type="email"    id="adminEmail"    placeholder="البريد الإلكتروني">
     <input type="password" id="adminPassword" placeholder="كلمة المرور">
     <button onclick="adminLogin()">دخول 🔐</button>
@@ -182,7 +224,7 @@
   </div>
 </div>
 
-<!-- ── لوحة التحكم ── -->
+<!-- DASHBOARD -->
 <div id="mainDashboard" style="display:none">
 
   <header>
@@ -193,48 +235,83 @@
     </div>
   </header>
 
-  <div class="container">
-
-    <!-- إحصائيات -->
-    <div class="stats-grid">
-      <div class="stat-card orange">
-        <div class="stat-value" id="statPending">0</div>
-        <div class="stat-label">⏳ قيد الانتظار</div>
-      </div>
-      <div class="stat-card blue">
-        <div class="stat-value" id="statAccepted">0</div>
-        <div class="stat-label">🚗 جارٍ التنفيذ</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="statDone">0</div>
-        <div class="stat-label">✅ مكتملة</div>
-      </div>
-      <div class="stat-card red">
-        <div class="stat-value" id="statRevenue">0</div>
-        <div class="stat-label">💰 إجمالي (أوقية)</div>
-      </div>
-    </div>
-
-    <!-- فلتر -->
-    <div class="toolbar">
-      <button class="filter-btn active" onclick="setFilter('all', this)">الكل</button>
-      <button class="filter-btn" onclick="setFilter('pending', this)">⏳ انتظار</button>
-      <button class="filter-btn" onclick="setFilter('accepted', this)">🚗 جارية</button>
-      <button class="filter-btn" onclick="setFilter('done', this)">✅ مكتملة</button>
-      <button class="filter-btn" onclick="setFilter('cancel', this)">❌ ملغاة</button>
-      <input class="search-box" id="searchBox" placeholder="🔍 بحث بالاسم أو الهاتف..." oninput="renderRides()">
-    </div>
-
-    <div id="ridesContainer"><div class="empty"><span class="empty-icon">⏳</span>جارٍ التحميل...</div></div>
-
+  <!-- TABS -->
+  <div class="main-tabs">
+    <button class="main-tab active" onclick="switchMainTab('rides',this)">🚨 الطلبات</button>
+    <button class="main-tab" onclick="switchMainTab('drivers',this)">🚗 السائقون</button>
   </div>
+
+  <!-- TAB: RIDES -->
+  <div id="tab-rides">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card orange"><div class="stat-value" id="statPending">0</div><div class="stat-label">⏳ انتظار</div></div>
+        <div class="stat-card blue"><div class="stat-value" id="statAccepted">0</div><div class="stat-label">🚗 جارية</div></div>
+        <div class="stat-card"><div class="stat-value" id="statDone">0</div><div class="stat-label">✅ مكتملة</div></div>
+        <div class="stat-card red"><div class="stat-value" id="statRevenue">0</div><div class="stat-label">💰 إيرادات (أوقية)</div></div>
+      </div>
+      <div class="toolbar">
+        <button class="filter-btn active" onclick="setFilter('all',this)">الكل</button>
+        <button class="filter-btn" onclick="setFilter('pending',this)">⏳ انتظار</button>
+        <button class="filter-btn" onclick="setFilter('accepted',this)">🚗 جارية</button>
+        <button class="filter-btn" onclick="setFilter('done',this)">✅ مكتملة</button>
+        <button class="filter-btn" onclick="setFilter('cancel',this)">❌ ملغاة</button>
+        <input class="search-box" id="searchBox" placeholder="🔍 بحث بالاسم أو الهاتف..." oninput="renderRides()">
+      </div>
+      <div id="ridesContainer"><div class="empty"><span class="empty-icon">⏳</span>جارٍ التحميل...</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: DRIVERS -->
+  <div id="tab-drivers" style="display:none">
+    <div class="container">
+
+      <!-- نموذج تسجيل سائق جديد -->
+      <div class="reg-card">
+        <div class="reg-title">➕ تسجيل سائق جديد</div>
+        <div class="reg-grid">
+          <div class="reg-input-group">
+            <label>الاسم الكامل</label>
+            <input id="rName" type="text" placeholder="اسم السائق">
+          </div>
+          <div class="reg-input-group">
+            <label>رقم الهاتف</label>
+            <input id="rPhone" type="tel" placeholder="رقم الهاتف">
+          </div>
+          <div class="reg-input-group">
+            <label>كلمة المرور</label>
+            <input id="rPassword" type="password" placeholder="6 أحرف على الأقل">
+          </div>
+          <div class="reg-input-group">
+            <label>نوع السيارة</label>
+            <input id="rCar" type="text" placeholder="مثال: تويوتا كورولا">
+          </div>
+          <div class="reg-input-group">
+            <label>رقم اللوحة</label>
+            <input id="rPlate" type="text" placeholder="رقم اللوحة">
+          </div>
+          <div class="reg-input-group">
+            <label>المنطقة</label>
+            <input id="rArea" type="text" placeholder="الحي أو المنطقة">
+          </div>
+        </div>
+        <button class="reg-submit" id="regBtn" onclick="registerDriver()">تسجيل السائق وإرسال بياناته على واتساب 🚀</button>
+        <p id="regMsg"></p>
+      </div>
+
+      <!-- قائمة السائقين -->
+      <div id="driversList"><div class="empty"><span class="empty-icon">⏳</span>جارٍ التحميل...</div></div>
+
+    </div>
+  </div>
+
 </div>
 
 <script type="module">
-  import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, getDocs }
+  import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, getDocs, addDoc }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -247,6 +324,7 @@
   };
 
   const ADMIN_UID  = "RbDYeiTT7Ofg3dyBqRUcYZpTJ8Q2";
+  const ADMIN_WA   = "22249841300";
   const COMMISSION = 0.40;
 
   const app  = initializeApp(firebaseConfig);
@@ -261,173 +339,238 @@
   window.adminLogin = async function() {
     const email = document.getElementById("adminEmail").value.trim();
     const pass  = document.getElementById("adminPassword").value.trim();
-    const errEl = document.getElementById("loginError");
-    errEl.innerText = "";
-    try {
-      await signInWithEmailAndPassword(auth, email, pass);
-    } catch {
-      errEl.innerText = "❌ البريد أو كلمة المرور غير صحيحة";
-    }
+    document.getElementById("loginError").innerText = "";
+    try { await signInWithEmailAndPassword(auth, email, pass); }
+    catch { document.getElementById("loginError").innerText = "❌ البريد أو كلمة المرور غير صحيحة"; }
   };
 
   window.adminLogout = async function() { await signOut(auth); };
 
-  // ── حالة المصادقة ──
   onAuthStateChanged(auth, async (user) => {
     if (!user || user.uid !== ADMIN_UID) {
       document.getElementById("loginOverlay").style.display = "flex";
       document.getElementById("mainDashboard").style.display = "none";
       return;
     }
-    document.getElementById("loginOverlay").style.display = "none";
+    document.getElementById("loginOverlay").style.display  = "none";
     document.getElementById("mainDashboard").style.display = "block";
     await loadDrivers();
     startLiveRides();
   });
 
-  // ── تحميل السائقين ──
-  async function loadDrivers() {
-    const snap = await getDocs(collection(db, "drivers"));
-    allDrivers = [];
-    snap.forEach(d => allDrivers.push({ id: d.id, ...d.data() }));
-  }
+  // ── تبديل التابز الرئيسية ──
+  window.switchMainTab = function(tab, btn) {
+    document.getElementById("tab-rides").style.display   = tab === "rides"   ? "block" : "none";
+    document.getElementById("tab-drivers").style.display = tab === "drivers" ? "block" : "none";
+    document.querySelectorAll(".main-tab").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    if (tab === "drivers") renderDriversList();
+  };
 
-  // ── الطلبات (real-time) ──
+  // ── الطلبات ──
   function startLiveRides() {
-    onSnapshot(collection(db, "rides"), (snapshot) => {
+    onSnapshot(collection(db,"rides"), (snapshot) => {
       allRides = [];
       let pending=0, accepted=0, done=0, revenue=0;
-
       snapshot.forEach(d => {
         const r = { id: d.id, ...d.data() };
         allRides.push(r);
-        if (r.status === "pending")  pending++;
-        if (r.status === "accepted") accepted++;
-        if (r.status === "done")     { done++; revenue += r.price || 0; }
+        if (r.status==="pending")  pending++;
+        if (r.status==="accepted") accepted++;
+        if (r.status==="done")     { done++; revenue += r.price||0; }
       });
-
-      // ترتيب تنازلي
-      allRides.sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
-
+      allRides.sort((a,b) => new Date(b.createdAt||0)-new Date(a.createdAt||0));
       document.getElementById("statPending").innerText  = pending;
       document.getElementById("statAccepted").innerText = accepted;
       document.getElementById("statDone").innerText     = done;
       document.getElementById("statRevenue").innerText  = revenue;
-
       renderRides();
     });
   }
 
-  // ── فلتر ──
-  window.setFilter = function(filter, btn) {
-    currentFilter = filter;
+  window.setFilter = function(f, btn) {
+    currentFilter = f;
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     renderRides();
   };
 
-  // ── عرض الطلبات ──
   window.renderRides = function() {
     const search = document.getElementById("searchBox").value.toLowerCase();
     const container = document.getElementById("ridesContainer");
-
-    let rides = allRides.filter(r => {
-      const matchFilter = currentFilter === "all" || r.status === currentFilter;
-      const matchSearch = !search ||
-        (r.name  || "").toLowerCase().includes(search) ||
-        (r.phone || "").toLowerCase().includes(search);
-      return matchFilter && matchSearch;
+    const rides = allRides.filter(r => {
+      const mf = currentFilter==="all" || r.status===currentFilter;
+      const ms = !search || (r.name||"").toLowerCase().includes(search) || (r.phone||"").toLowerCase().includes(search);
+      return mf && ms;
     });
-
-    if (rides.length === 0) {
-      container.innerHTML = `<div class="empty"><span class="empty-icon">📭</span>لا توجد طلبات</div>`;
-      return;
-    }
+    if (!rides.length) { container.innerHTML = `<div class="empty"><span class="empty-icon">📭</span>لا توجد طلبات</div>`; return; }
 
     container.innerHTML = "";
     rides.forEach(r => {
-      const div = document.createElement("div");
-      div.className = `ride-card ${r.status || "pending"}`;
-
-      const badgeText = { pending:"⏳ انتظار", accepted:"🚗 جارية", done:"✅ مكتملة", cancel:"❌ ملغاة" };
-      const date      = r.createdAt ? new Date(r.createdAt).toLocaleString("ar-EG") : "";
-      const mapLink   = r.lat ? `https://maps.google.com/?q=${r.lat},${r.lng}` : null;
-      const commission= Math.round((r.price||0) * COMMISSION);
-      const profit    = (r.price||0) - commission;
-
-      // قائمة السائقين
-      const driverOptions = allDrivers
-        .map(d => `<option value="${d.phone}" ${r.driver_phone===d.phone?"selected":""}>${d.name} (${d.phone})</option>`)
-        .join("");
+      const div  = document.createElement("div");
+      div.className = `ride-card ${r.status||"pending"}`;
+      const badge = {pending:"⏳ انتظار",accepted:"🚗 جارية",done:"✅ مكتملة",cancel:"❌ ملغاة"};
+      const date  = r.createdAt ? new Date(r.createdAt).toLocaleString("ar-EG") : "";
+      const comm  = Math.round((r.price||0)*COMMISSION);
+      const profit= (r.price||0)-comm;
+      const opts  = allDrivers.map(d=>`<option value="${d.phone}" ${r.driver_phone===d.phone?"selected":""}>${d.name} (${d.phone})</option>`).join("");
+      const mapL  = r.lat ? `<div class="info-item">🗺️ <a href="https://maps.google.com/?q=${r.lat},${r.lng}" target="_blank" style="color:var(--primary);font-weight:700;">عرض الموقع</a></div>` : "";
 
       div.innerHTML = `
         <div class="card-header">
-          <div class="client-info">
-            <div class="client-name">👤 ${r.name || "-"}</div>
-            <div class="client-phone">📞 ${r.phone || "-"}</div>
-          </div>
-          <span class="badge ${r.status || "pending"}">${badgeText[r.status] || r.status}</span>
+          <div><div class="client-name">👤 ${r.name||"-"}</div><div class="client-phone">📞 ${r.phone||"-"}</div></div>
+          <span class="badge ${r.status||"pending"}">${badge[r.status]||r.status}</span>
         </div>
-
         <div class="card-body">
-          <div class="info-item">📍 <span class="label">من:</span> <span class="value">${r.from || "-"}</span></div>
-          <div class="info-item">🏥 <span class="label">إلى:</span> <span class="value">${r.to || "-"}</span></div>
-          <div class="info-item">💰 <span class="label">السعر:</span> <span class="value">${r.price || 0} أوقية</span></div>
-          <div class="info-item">📏 <span class="label">المسافة:</span> <span class="value">${r.distance ? r.distance.toFixed(1)+" كم" : "-"}</span></div>
-          <div class="info-item">🤝 <span class="label">عمولة:</span> <span class="value">${commission} | ربح السائق: ${profit}</span></div>
-          ${r.driver_name ? `<div class="info-item">🚗 <span class="label">السائق:</span> <span class="value">${r.driver_name}</span></div>` : ""}
-          ${mapLink ? `<div class="info-item">🗺️ <a class="map-link" href="${mapLink}" target="_blank">عرض الموقع</a></div>` : ""}
+          <div class="info-item">📍 <span class="lbl">من:</span><span class="val">${r.from||"-"}</span></div>
+          <div class="info-item">🏥 <span class="lbl">إلى:</span><span class="val">${r.to||"-"}</span></div>
+          <div class="info-item">💰 <span class="lbl">السعر:</span><span class="val">${r.price||0} أوقية</span></div>
+          <div class="info-item">📏 <span class="lbl">المسافة:</span><span class="val">${r.distance?r.distance.toFixed(2)+" كم":"-"}</span></div>
+          <div class="info-item">🤝 <span class="lbl">عمولة:</span><span class="val">${comm} | ربح: ${profit}</span></div>
+          ${r.driver_name?`<div class="info-item">🚗 <span class="lbl">السائق:</span><span class="val">${r.driver_name}</span></div>`:""}
+          ${mapL}
         </div>
-
-        ${r.status === "pending" ? `
-        <div class="driver-assign">
-          <span>تعيين سائق:</span>
-          <select id="drv_${r.id}">${driverOptions}</select>
-          <button class="assign-btn" onclick="assignDriver('${r.id}')">تعيين</button>
-        </div>` : ""}
-
+        ${r.status==="pending"?`<div class="driver-assign"><span>تعيين سائق:</span><select id="drv_${r.id}">${opts}</select><button class="assign-btn" onclick="assignDriver('${r.id}')">تعيين</button></div>`:""}
         <div class="card-actions">
-          ${r.status === "pending"  ? `<button class="btn btn-accept"  onclick="updateStatus('${r.id}','accepted')">✅ قبول</button>` : ""}
-          ${r.status === "accepted" ? `<button class="btn btn-finish"  onclick="updateStatus('${r.id}','done')">🏁 إنهاء</button>` : ""}
-          ${r.status !== "cancel" && r.status !== "done" ? `<button class="btn btn-cancel"  onclick="updateStatus('${r.id}','cancel')">❌ إلغاء</button>` : ""}
-          ${r.phone ? `<a class="btn btn-wa" href="https://wa.me/${r.phone}" target="_blank">💬 واتساب</a>` : ""}
+          ${r.status==="pending" ?`<button class="btn btn-accept" onclick="updateStatus('${r.id}','accepted')">✅ قبول</button>`:""}
+          ${r.status==="accepted"?`<button class="btn btn-finish" onclick="updateStatus('${r.id}','done')">🏁 إنهاء</button>`:""}
+          ${r.status!=="cancel"&&r.status!=="done"?`<button class="btn btn-cancel" onclick="updateStatus('${r.id}','cancel')">❌ إلغاء</button>`:""}
+          ${r.phone?`<a class="btn btn-wa" href="https://wa.me/${r.phone}" target="_blank">💬 واتساب</a>`:""}
           <button class="btn btn-delete" onclick="deleteRide('${r.id}')">🗑️ حذف</button>
         </div>
-        <div class="date-text">${date}</div>
-      `;
+        <div class="date-text">${date}</div>`;
       container.appendChild(div);
     });
   };
 
-  // ── تعيين سائق ──
   window.assignDriver = async function(rideId) {
-    const sel    = document.getElementById(`drv_${rideId}`);
-    const phone  = sel.value;
-    const driver = allDrivers.find(d => d.phone === phone);
+    const sel = document.getElementById(`drv_${rideId}`);
+    const driver = allDrivers.find(d => d.phone===sel.value);
     if (!driver) return;
-    await updateDoc(doc(db, "rides", rideId), {
-      driver_phone:   driver.phone,
-      driver_name:    driver.name,
-      driver_doc_id:  driver.id,
-      assignedAt: new Date().toISOString()
+    await updateDoc(doc(db,"rides",rideId), {
+      driver_phone: driver.phone, driver_name: driver.name,
+      driver_doc_id: driver.id, assignedAt: new Date().toISOString()
     });
     alert(`✅ تم تعيين السائق ${driver.name}`);
   };
 
-  // ── تحديث الحالة ──
   window.updateStatus = async function(rideId, status) {
-    await updateDoc(doc(db, "rides", rideId), {
-      status,
-      updatedAt: new Date().toISOString()
-    });
+    await updateDoc(doc(db,"rides",rideId), { status, updatedAt: new Date().toISOString() });
   };
 
-  // ── حذف ──
   window.deleteRide = async function(rideId) {
     if (!confirm("هل أنت متأكد من حذف هذا الطلب؟")) return;
-    await deleteDoc(doc(db, "rides", rideId));
+    await deleteDoc(doc(db,"rides",rideId));
   };
-</script>
 
+  // ── السائقون ──
+  async function loadDrivers() {
+    const snap = await getDocs(collection(db,"drivers"));
+    allDrivers = [];
+    snap.forEach(d => allDrivers.push({ id: d.id, ...d.data() }));
+  }
+
+  function renderDriversList() {
+    const list = document.getElementById("driversList");
+    if (!allDrivers.length) { list.innerHTML = `<div class="empty"><span class="empty-icon">🚗</span>لا يوجد سائقون مسجلون</div>`; return; }
+    list.innerHTML = "";
+    allDrivers.forEach(d => {
+      const verified = d.isVerified;
+      list.innerHTML += `
+        <div class="driver-list-card ${verified?"":"unverified"}">
+          <div class="driver-info">
+            <div class="d-name">🚗 ${d.name} ${verified?"✅":""}</div>
+            <div class="d-sub">📞 ${d.phone} · ${d.car_model||"-"} · ${d.area||"-"}</div>
+            <div class="d-sub">💰 رصيد: ${d.balance||0} أوقية · ${verified?"موثّق":"غير موثّق"}</div>
+          </div>
+          <div class="driver-actions">
+            ${verified
+              ?`<button class="btn btn-unverify" onclick="toggleVerify('${d.id}',false)">🔒 إلغاء التوثيق</button>`
+              :`<button class="btn btn-verify"   onclick="toggleVerify('${d.id}',true)">✅ توثيق</button>`
+            }
+            <button class="btn btn-delete" onclick="deleteDriver('${d.id}')">🗑️</button>
+          </div>
+        </div>`;
+    });
+  }
+
+  window.toggleVerify = async function(driverId, verified) {
+    await updateDoc(doc(db,"drivers",driverId), { isVerified: verified });
+    await loadDrivers();
+    renderDriversList();
+  };
+
+  window.deleteDriver = async function(driverId) {
+    if (!confirm("هل تريد حذف هذا السائق؟")) return;
+    await deleteDoc(doc(db,"drivers",driverId));
+    await loadDrivers();
+    renderDriversList();
+  };
+
+  // ── تسجيل سائق جديد من لوحة التحكم ──
+  window.registerDriver = async function() {
+    const name     = document.getElementById("rName").value.trim();
+    const phone    = document.getElementById("rPhone").value.trim();
+    const password = document.getElementById("rPassword").value.trim();
+    const car      = document.getElementById("rCar").value.trim();
+    const plate    = document.getElementById("rPlate").value.trim();
+    const area     = document.getElementById("rArea").value.trim();
+    const msg      = document.getElementById("regMsg");
+    const btn      = document.getElementById("regBtn");
+
+    if (!name||!phone||!password||!car||!plate||!area) {
+      msg.style.color="#e53935"; msg.innerText="⚠️ الرجاء ملء جميع الحقول."; return;
+    }
+    if (password.length < 6) {
+      msg.style.color="#e53935"; msg.innerText="⚠️ كلمة المرور 6 أحرف على الأقل."; return;
+    }
+
+    btn.disabled=true; btn.innerText="⏳ جارٍ التسجيل..."; msg.innerText="";
+
+    try {
+      // 1. إنشاء حساب Firebase Auth
+      const email   = `${phone}@wassalni.com`;
+      const userCred= await createUserWithEmailAndPassword(auth, email, password);
+      const uid     = userCred.user.uid;
+
+      // 2. حفظ بيانات السائق في Firestore — موثّق مباشرة لأن الأدمين سجّله
+      const docRef = await addDoc(collection(db,"drivers"), {
+        uid, name, phone, car_model: car, plate, area,
+        balance: 0, isVerified: true, status: "available",
+        registeredAt: new Date().toISOString()
+      });
+
+      // 3. إرسال بيانات الدخول للسائق على واتساب
+      const waText = encodeURIComponent(
+        `مرحباً ${name} 👋\n` +
+        `تم تسجيلك كسائق في وصّلني ✅\n\n` +
+        `بيانات دخولك:\n` +
+        `🔗 الرابط: https://7766667.github.io/WASSALNI/driver-dashboard.html\n` +
+        `📞 رقم الهاتف: ${phone}\n` +
+        `🔑 كلمة المرور: ${password}\n\n` +
+        `أهلاً بك في فريق وصّلني 🚗`
+      );
+      window.open(`https://wa.me/${phone}?text=${waText}`, "_blank");
+
+      msg.style.color="var(--primary)";
+      msg.innerText="✅ تم تسجيل السائق وإرسال بياناته على واتساب!";
+
+      // مسح الحقول
+      ["rName","rPhone","rPassword","rCar","rPlate","rArea"].forEach(id => document.getElementById(id).value="");
+
+      await loadDrivers();
+      renderDriversList();
+
+    } catch(e) {
+      msg.style.color="#e53935";
+      if (e.code==="auth/email-already-in-use") msg.innerText="⚠️ رقم الهاتف مسجل مسبقاً!";
+      else msg.innerText="❌ خطأ: " + e.message;
+    }
+
+    btn.disabled=false;
+    btn.innerText="تسجيل السائق وإرسال بياناته على واتساب 🚀";
+  };
+
+</script>
 </body>
 </html>
