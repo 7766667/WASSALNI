@@ -542,10 +542,17 @@
     if (!phone || !pass) { msg.style.color="#e53935"; msg.innerText="⚠️ أدخل رقم الهاتف وكلمة المرور"; return; }
 
     btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> جارٍ الدخول...';
+    msg.innerText="";
     try {
       await signInWithEmailAndPassword(auth, phone+"@wassalni-user.com", pass);
-    } catch {
-      msg.style.color="#e53935"; msg.innerText="❌ رقم الهاتف أو كلمة المرور غير صحيحة";
+      // onAuthStateChanged سيتولى الانتقال تلقائياً
+    } catch(e) {
+      msg.style.color="#e53935";
+      if (e.code==="auth/user-not-found" || e.code==="auth/wrong-password" || e.code==="auth/invalid-credential") {
+        msg.innerText="❌ رقم الهاتف أو كلمة المرور غير صحيحة";
+      } else {
+        msg.innerText="❌ خطأ: " + e.message;
+      }
       btn.disabled=false; btn.innerText="دخول 🚀";
     }
   };
@@ -562,16 +569,32 @@
     if (pass.length<6)        { msg.style.color="#e53935"; msg.innerText="⚠️ كلمة المرور 6 أحرف على الأقل"; return; }
 
     btn.disabled=true; btn.innerHTML='<span class="spin">⏳</span> جارٍ الإنشاء...';
+    msg.innerText="";
     try {
       const email = phone+"@wassalni-user.com";
       const cred  = await createUserWithEmailAndPassword(auth, email, pass);
+
+      // حفظ بيانات المستخدم
       await setDoc(doc(db,"users",cred.user.uid), {
         uid: cred.user.uid, name, phone,
         createdAt: new Date().toISOString()
       });
+
+      // نجح التسجيل — onAuthStateChanged سينتقل تلقائياً
+      msg.style.color="#0A7C5C";
+      msg.innerText="✅ تم إنشاء حسابك! جارٍ الدخول...";
+
     } catch(e) {
       msg.style.color="#e53935";
-      msg.innerText = e.code==="auth/email-already-in-use" ? "⚠️ رقم الهاتف مسجل مسبقاً!" : "❌ حدث خطأ: "+e.message;
+      if (e.code==="auth/email-already-in-use") {
+        msg.innerText="⚠️ رقم الهاتف مسجل مسبقاً! يمكنك تسجيل الدخول.";
+      } else if (e.code==="auth/weak-password") {
+        msg.innerText="⚠️ كلمة المرور ضعيفة، استخدم 6 أحرف على الأقل.";
+      } else if (e.code==="auth/network-request-failed") {
+        msg.innerText="❌ تحقق من اتصالك بالإنترنت.";
+      } else {
+        msg.innerText="❌ خطأ: " + e.message;
+      }
       btn.disabled=false; btn.innerText="إنشاء حساب ✨";
     }
   };
