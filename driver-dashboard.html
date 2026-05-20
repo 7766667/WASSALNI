@@ -322,6 +322,14 @@
     }
 
     const driverData    = snap.docs[0].data();
+
+    // ── تحقق من التوثيق ──
+    if (!driverData.isVerified) {
+      await signOut(auth);
+      document.getElementById("login-error").innerText = "⏳ حسابك قيد المراجعة. انتظر موافقة الأدمين.";
+      return;
+    }
+
     currentDriverPhone  = driverData.phone;
     currentDriverDocId  = snap.docs[0].id;
     currentDriverName   = driverData.name;
