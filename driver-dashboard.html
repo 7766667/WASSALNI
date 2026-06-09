@@ -14,12 +14,9 @@
     }
     body { font-family: 'Cairo', sans-serif; background: var(--gray); min-height: 100vh; }
 
-    /* ── شاشة تسجيل الدخول ── */
     .login-screen {
-      min-height: 100vh; display: flex; align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      padding: 20px;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light)); padding: 20px;
     }
     .login-card {
       background: white; border-radius: 28px; padding: 48px 36px;
@@ -30,10 +27,9 @@
     .login-card h2 { font-size: 26px; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
     .login-card > p { color: var(--text-light); font-size: 14px; margin-bottom: 28px; }
     .login-input {
-      width: 100%; padding: 14px 16px; border: 2px solid #e8ecf0;
-      border-radius: 12px; font-size: 15px; font-family: 'Cairo', sans-serif;
-      outline: none; color: var(--text); margin-bottom: 14px;
-      transition: border-color 0.3s; background: #fafafa; text-align: center;
+      width: 100%; padding: 14px 16px; border: 2px solid #e8ecf0; border-radius: 12px;
+      font-size: 15px; font-family: 'Cairo', sans-serif; outline: none; color: var(--text);
+      margin-bottom: 14px; transition: border-color 0.3s; background: #fafafa; text-align: center;
     }
     .login-input:focus { border-color: var(--accent); }
     .login-btn {
@@ -43,10 +39,7 @@
       font-size: 17px; font-weight: 700; font-family: 'Cairo', sans-serif; cursor: pointer;
     }
     #login-error { color: #e53935; font-size: 13px; margin-top: 10px; font-weight: 600; }
-    .register-link { margin-top: 16px; font-size: 13px; color: var(--text-light); }
-    .register-link a { color: var(--accent); font-weight: 700; text-decoration: none; }
 
-    /* ── هيدر ── */
     header {
       background: linear-gradient(135deg, var(--primary), var(--primary-light));
       color: white; padding: 16px 20px;
@@ -64,8 +57,25 @@
       font-size: 13px; font-weight: 600; cursor: pointer;
     }
 
-    /* ── الرصيد ── */
+    /* موقع السائق */
+    .location-bar {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: white; padding: 10px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px;
+    }
+    .location-status { display: flex; align-items: center; gap: 8px; }
+    .loc-dot { width: 8px; height: 8px; border-radius: 50%; background: #00e676; animation: pulse 1.5s infinite; }
+    .loc-dot.off { background: #ff5252; animation: none; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .update-loc-btn {
+      background: rgba(255,255,255,0.2); color: white; border: none;
+      padding: 6px 12px; border-radius: 8px; font-family: 'Cairo', sans-serif;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+
     .container { max-width: 700px; margin: 24px auto; padding: 0 16px; }
+
     .balance-card {
       background: linear-gradient(135deg, var(--accent), var(--accent-light));
       border-radius: 20px; padding: 24px 28px; margin-bottom: 20px;
@@ -73,20 +83,13 @@
     }
     .balance-label { font-size: 13px; opacity: 0.85; margin-bottom: 4px; }
     .balance-amount { font-size: 34px; font-weight: 900; }
-    .balance-sub { font-size: 12px; opacity: 0.75; margin-top: 2px; }
-    .status-toggle {
-      display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
-    }
-    .status-label { font-size: 12px; opacity: 0.85; }
     .toggle-btn {
       padding: 8px 18px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.5);
       background: rgba(255,255,255,0.15); color: white;
-      font-family: 'Cairo', sans-serif; font-size: 13px;
-      font-weight: 700; cursor: pointer; transition: all 0.3s;
+      font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer;
     }
-    .toggle-btn.offline { background: rgba(0,0,0,0.25); border-color: rgba(255,255,255,0.3); }
+    .toggle-btn.offline { background: rgba(0,0,0,0.25); }
 
-    /* ── تابز ── */
     .tabs {
       display: flex; gap: 8px; margin-bottom: 20px;
       background: white; border-radius: 14px; padding: 6px;
@@ -94,7 +97,7 @@
     }
     .tab-btn {
       flex: 1; padding: 11px; border: none; border-radius: 10px;
-      font-weight: 700; font-family: 'Cairo', sans-serif; font-size: 14px;
+      font-weight: 700; font-family: 'Cairo', sans-serif; font-size: 13px;
       cursor: pointer; color: var(--text-light); background: transparent; transition: all 0.3s;
     }
     .tab-btn.active {
@@ -102,87 +105,82 @@
       color: white; box-shadow: 0 4px 12px rgba(26,26,46,0.25);
     }
 
-    /* ── بطاقة الطلب ── */
+    /* بطاقة الطلب */
     .ride-card {
       background: white; border-radius: 18px; padding: 20px 22px;
       margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border-right: 4px solid var(--accent);
-      animation: fadeIn 0.3s ease;
+      border-right: 4px solid var(--accent); animation: fadeIn 0.3s ease;
     }
-    @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .ride-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-    .ride-name { font-size: 16px; font-weight: 700; color: var(--text); }
+    .ride-name { font-size: 16px; font-weight: 700; }
     .ride-phone { font-size: 13px; color: var(--text-light); margin-top: 2px; }
     .ride-price-badge {
       background: linear-gradient(135deg, var(--accent), var(--accent-light));
-      color: white; padding: 6px 14px; border-radius: 20px;
-      font-size: 15px; font-weight: 900;
+      color: white; padding: 6px 14px; border-radius: 20px; font-size: 15px; font-weight: 900;
     }
     .ride-details { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
     .ride-detail { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-light); }
     .ride-detail strong { color: var(--text); }
     .ride-actions { display: flex; gap: 10px; }
     .btn-accept {
-      flex: 2; padding: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      flex: 2; padding: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
       color: white; border: none; border-radius: 12px;
-      font-size: 15px; font-weight: 700; font-family: 'Cairo', sans-serif;
-      cursor: pointer; transition: all 0.3s;
+      font-size: 15px; font-weight: 700; font-family: 'Cairo', sans-serif; cursor: pointer;
     }
-    .btn-accept:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(10,124,92,0.4); }
     .btn-reject {
-      flex: 1; padding: 12px; background: #fff0f0;
-      color: #e53935; border: 2px solid #ffcdd2; border-radius: 12px;
-      font-size: 14px; font-weight: 700; font-family: 'Cairo', sans-serif;
-      cursor: pointer; transition: all 0.3s;
+      flex: 1; padding: 12px; background: #fff0f0; color: #e53935;
+      border: 2px solid #ffcdd2; border-radius: 12px;
+      font-size: 14px; font-weight: 700; font-family: 'Cairo', sans-serif; cursor: pointer;
     }
-    .btn-reject:hover { background: #ffebee; }
     .btn-finish {
       width: 100%; padding: 12px;
       background: linear-gradient(135deg, #1565c0, #1976d2);
       color: white; border: none; border-radius: 12px;
-      font-size: 15px; font-weight: 700; font-family: 'Cairo', sans-serif;
-      cursor: pointer; margin-top: 10px;
+      font-size: 15px; font-weight: 700; font-family: 'Cairo', sans-serif; cursor: pointer; margin-top: 10px;
+    }
+    .btn-call {
+      padding: 12px 16px; background: #e8f5e9; color: #2e7d32;
+      border: none; border-radius: 12px; font-size: 18px; cursor: pointer;
     }
 
-    /* ── بطاقة السجل ── */
-    .driver-stats {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 10px; margin-bottom: 20px;
+    /* إشعار طلب جديد */
+    .new-ride-alert {
+      display: none; position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: white; padding: 14px 24px; border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(10,124,92,0.5); z-index: 999;
+      font-weight: 700; font-size: 15px; animation: slideDown 0.3s ease;
+      white-space: nowrap;
     }
-    .driver-stat {
-      background: white; padding: 18px 12px; text-align: center;
-      border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    }
+    @keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+    .driver-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
+    .driver-stat { background: white; padding: 18px 12px; text-align: center; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
     .stat-value { font-size: 22px; font-weight: 900; color: var(--accent); }
     .stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; }
-    .history-card {
-      background: white; border-radius: 16px; padding: 18px 20px;
-      margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    }
+
+    .history-card { background: white; border-radius: 16px; padding: 18px 20px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
     .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .history-name { font-weight: 700; font-size: 14px; }
     .history-date { font-size: 11px; color: var(--text-light); }
-    .history-route { font-size: 13px; color: var(--text-light); line-height: 1.8; }
-    .history-footer {
-      display: flex; justify-content: space-between; margin-top: 10px;
-      padding-top: 10px; border-top: 1px solid #f0f0f0; font-size: 13px;
-    }
+    .history-footer { display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; font-size: 13px; }
     .profit-text { color: var(--accent); font-weight: 700; }
     .commission-text { color: #e53935; font-weight: 600; }
 
-    .empty {
-      text-align: center; padding: 60px 20px; color: #bbb;
-      font-size: 15px; font-weight: 600;
-    }
+    .empty { text-align: center; padding: 60px 20px; color: #bbb; font-size: 15px; font-weight: 600; }
     .empty-icon { font-size: 48px; display: block; margin-bottom: 12px; }
-
-    .loading-spin { display: inline-block; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { display: inline-block; animation: sp 1s linear infinite; }
+    @keyframes sp { to{transform:rotate(360deg)} }
   </style>
 </head>
 <body>
 
-<!-- ── شاشة تسجيل الدخول ── -->
+<!-- إشعار طلب جديد -->
+<div class="new-ride-alert" id="newRideAlert">🚨 طلب جديد! تحقق من الطلبات</div>
+
+<!-- شاشة الدخول -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="login-logo">🚙</div>
@@ -192,11 +190,10 @@
     <input class="login-input" id="passwordInput" type="password" placeholder="كلمة المرور">
     <button class="login-btn" id="loginBtn">دخول 🚀</button>
     <p id="login-error"></p>
-    
   </div>
 </div>
 
-<!-- ── لوحة التحكم ── -->
+<!-- لوحة التحكم -->
 <div id="driverDashboard" style="display:none;">
 
   <header>
@@ -207,46 +204,47 @@
     </div>
   </header>
 
+  <!-- شريط الموقع -->
+  <div class="location-bar">
+    <div class="location-status">
+      <span class="loc-dot" id="locDot"></span>
+      <span id="locText">جارٍ تحديد موقعك...</span>
+    </div>
+    <button class="update-loc-btn" onclick="updateLocation()">🎯 تحديث الموقع</button>
+  </div>
+
   <div class="container">
 
-    <!-- الرصيد والحالة -->
     <div class="balance-card">
       <div>
         <div class="balance-label">رصيدك الحالي</div>
         <div class="balance-amount" id="balanceAmount">0 <span style="font-size:18px">أوقية</span></div>
-        <div class="balance-sub" id="driverArea">---</div>
+        <div style="font-size:12px;opacity:0.75;margin-top:4px" id="driverArea"></div>
       </div>
-      <div class="status-toggle">
-        <div class="status-label">حالتك</div>
-        <button class="toggle-btn" id="statusToggleBtn" onclick="toggleStatus()">🟢 متاح</button>
-      </div>
+      <button class="toggle-btn" id="statusToggleBtn" onclick="toggleStatus()">🟢 متاح</button>
     </div>
 
-    <!-- التابز -->
     <div class="tabs">
-      <button class="tab-btn active" id="tabRides" onclick="switchTab('rides')">🚨 الطلبات الجديدة</button>
-      <button class="tab-btn" id="tabMine" onclick="switchTab('mine')">🚗 طلباتي</button>
-      <button class="tab-btn" id="tabHistory" onclick="switchTab('history')">📊 السجل</button>
+      <button class="tab-btn active" id="tabRides"   onclick="switchTab('rides')">🚨 الطلبات</button>
+      <button class="tab-btn"        id="tabMine"    onclick="switchTab('mine')">🚗 طلباتي</button>
+      <button class="tab-btn"        id="tabHistory" onclick="switchTab('history')">📊 السجل</button>
     </div>
 
-    <!-- طلبات جديدة -->
     <div id="tab-rides">
       <div id="ridesList"><div class="empty"><span class="empty-icon">⏳</span>جارٍ التحميل...</div></div>
     </div>
 
-    <!-- طلباتي المقبولة -->
     <div id="tab-mine" style="display:none;">
-      <div id="myRidesList"><div class="empty"><span class="empty-icon">🚗</span>لا توجد طلبات مقبولة حالياً</div></div>
+      <div id="myRidesList"><div class="empty"><span class="empty-icon">🚗</span>لا توجد طلبات مقبولة</div></div>
     </div>
 
-    <!-- السجل -->
     <div id="tab-history" style="display:none;">
       <div class="driver-stats">
         <div class="driver-stat"><div class="stat-value" id="statTotal">0</div><div class="stat-label">رحلات</div></div>
-        <div class="driver-stat"><div class="stat-value" id="statEarned">0</div><div class="stat-label">أرباحي (أوقية)</div></div>
-        <div class="driver-stat"><div class="stat-value" id="statCommission">0</div><div class="stat-label">عمولة (أوقية)</div></div>
+        <div class="driver-stat"><div class="stat-value" id="statEarned">0</div><div class="stat-label">أرباحي</div></div>
+        <div class="driver-stat"><div class="stat-value" id="statCommission">0</div><div class="stat-label">عمولة</div></div>
       </div>
-      <div id="historyList"><div class="empty"><span class="empty-icon">📋</span>لا توجد رحلات منتهية</div></div>
+      <div id="historyList"><div class="empty"><span class="empty-icon">📋</span>لا توجد رحلات</div></div>
     </div>
 
   </div>
@@ -255,14 +253,13 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
-    getFirestore, collection, getDocs, doc, updateDoc,
-    query, where, onSnapshot, getDoc
+    getFirestore, collection, getDocs, doc, updateDoc, getDoc,
+    query, where, onSnapshot
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import {
     getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-  // ── Firebase Config ──
   const firebaseConfig = {
     apiKey: "AIzaSyAihGwDfen5b1SjtPmzL0aToigleyGt6rM",
     authDomain: "wassalni-fa958.firebaseapp.com",
@@ -272,11 +269,13 @@
     appId: "1:63888443959:web:3a28bf29c34c1f951d0db2"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
-  const auth= getAuth(app);
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
 
   const COMMISSION = 0.40;
+  const TG_TOKEN   = "8483708137:AAE5xlfHB1zLJLP3ztJPqAevslq2FNGZ5jM";
+  const TG_CHAT    = "6330736812";
 
   let currentDriverPhone  = "";
   let currentDriverDocId  = "";
@@ -285,275 +284,332 @@
   let currentBalance      = 0;
   let unsubPending        = null;
   let unsubMine           = null;
+  let locationInterval    = null;
+  let prevRideCount       = 0;
 
   // ── تسجيل الدخول ──
   document.getElementById("loginBtn").onclick = async () => {
     const phone = document.getElementById("phoneInput").value.trim();
     const pass  = document.getElementById("passwordInput").value.trim();
     const errEl = document.getElementById("login-error");
-
-    if (!phone || !pass) { errEl.innerText = "⚠️ أدخل رقم الهاتف وكلمة المرور"; return; }
-
-    document.getElementById("loginBtn").innerText = "⏳ جارٍ الدخول...";
+    if (!phone||!pass) { errEl.innerText="⚠️ أدخل رقم الهاتف وكلمة المرور"; return; }
+    document.getElementById("loginBtn").innerHTML='<span class="spin">⏳</span> جارٍ الدخول...';
     try {
-      await signInWithEmailAndPassword(auth, phone + "@wassalni.com", pass);
-    } catch (e) {
-      errEl.innerText = "❌ رقم الهاتف أو كلمة المرور غير صحيحة";
-      document.getElementById("loginBtn").innerText = "دخول 🚀";
+      await signInWithEmailAndPassword(auth, phone+"@wassalni.com", pass);
+    } catch {
+      errEl.innerText="❌ رقم الهاتف أو كلمة المرور غير صحيحة";
+      document.getElementById("loginBtn").innerText="دخول 🚀";
     }
   };
 
-  // ── تتبع حالة المصادقة ──
+  // ── حالة المصادقة ──
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      document.getElementById("loginScreen").style.display = "flex";
-      document.getElementById("driverDashboard").style.display = "none";
+      document.getElementById("loginScreen").style.display    = "flex";
+      document.getElementById("driverDashboard").style.display= "none";
+      if (locationInterval) clearInterval(locationInterval);
       return;
     }
 
-    // جلب بيانات السائق
-    const q    = query(collection(db, "drivers"), where("uid", "==", user.uid));
-    const snap = await getDocs(q);
+    try {
+      const q    = query(collection(db,"drivers"), where("uid","==",user.uid));
+      const snap = await getDocs(q);
+      if (snap.empty) { await signOut(auth); return; }
 
-    if (snap.empty) {
+      const d = snap.docs[0].data();
+
+      // تحقق من التوثيق
+      if (!d.isVerified) {
+        await signOut(auth);
+        document.getElementById("login-error").innerText="⏳ حسابك قيد المراجعة. انتظر موافقة الأدمين.";
+        document.getElementById("loginBtn").innerText="دخول 🚀";
+        return;
+      }
+
+      currentDriverPhone  = d.phone;
+      currentDriverDocId  = snap.docs[0].id;
+      currentDriverName   = d.name;
+      currentBalance      = d.balance||0;
+      currentDriverStatus = d.status||"available";
+
+      document.getElementById("driverNameBadge").innerText = currentDriverName;
+      document.getElementById("balanceAmount").innerHTML   = `${currentBalance} <span style="font-size:18px">أوقية</span>`;
+      document.getElementById("driverArea").innerText      = d.area||"";
+      updateStatusBtn(currentDriverStatus);
+
+      document.getElementById("loginScreen").style.display     = "none";
+      document.getElementById("driverDashboard").style.display = "block";
+
+      // ابدأ تحديث الموقع تلقائياً
+      updateLocation();
+      locationInterval = setInterval(updateLocation, 60000);
+
+      startLiveRides();
+      startMyRides();
+
+    } catch(e) {
+      document.getElementById("login-error").innerText="❌ حدث خطأ، حاول مجدداً.";
+      document.getElementById("loginBtn").innerText="دخول 🚀";
       await signOut(auth);
-      document.getElementById("login-error").innerText = "❌ لم يُعثر على حساب سائق.";
-      return;
     }
-
-    const driverData    = snap.docs[0].data();
-
-    // ── تحقق من التوثيق ──
-    if (!driverData.isVerified) {
-      await signOut(auth);
-      document.getElementById("login-error").innerText = "⏳ حسابك قيد المراجعة. انتظر موافقة الأدمين.";
-      return;
-    }
-
-    currentDriverPhone  = driverData.phone;
-    currentDriverDocId  = snap.docs[0].id;
-    currentDriverName   = driverData.name;
-    currentBalance      = driverData.balance || 0;
-    currentDriverStatus = driverData.status  || "available";
-
-    // عرض البيانات
-    document.getElementById("driverNameBadge").innerText = currentDriverName;
-    document.getElementById("balanceAmount").innerHTML   = `${currentBalance} <span style="font-size:18px">أوقية</span>`;
-    document.getElementById("driverArea").innerText      = driverData.area || "";
-    updateStatusBtn(currentDriverStatus);
-
-    document.getElementById("loginScreen").style.display    = "none";
-    document.getElementById("driverDashboard").style.display = "block";
-
-    startLiveRides();
-    startMyRides();
   });
+
+  // ── تحديث موقع السائق تلقائياً ──
+  window.updateLocation = function() {
+    if (!currentDriverDocId) return;
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      await updateDoc(doc(db,"drivers",currentDriverDocId), { lat, lng, lastSeen: new Date().toISOString() });
+      document.getElementById("locDot").classList.remove("off");
+      document.getElementById("locText").innerText=`📍 موقعك محدّث (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+    }, () => {
+      document.getElementById("locDot").classList.add("off");
+      document.getElementById("locText").innerText="⚠️ تعذّر تحديد موقعك";
+    }, { enableHighAccuracy:true, timeout:8000 });
+  };
 
   // ── تبديل الحالة ──
   window.toggleStatus = async function() {
-    const newStatus = currentDriverStatus === "available" ? "offline" : "available";
-    await updateDoc(doc(db, "drivers", currentDriverDocId), { status: newStatus });
+    const newStatus = currentDriverStatus==="available" ? "offline" : "available";
+    await updateDoc(doc(db,"drivers",currentDriverDocId), { status:newStatus });
     currentDriverStatus = newStatus;
     updateStatusBtn(newStatus);
   };
 
   function updateStatusBtn(status) {
     const btn = document.getElementById("statusToggleBtn");
-    if (status === "available") {
-      btn.innerText = "🟢 متاح";
-      btn.classList.remove("offline");
-    } else {
-      btn.innerText = "🔴 غير متاح";
-      btn.classList.add("offline");
-    }
+    btn.innerText = status==="available" ? "🟢 متاح" : "🔴 غير متاح";
+    btn.classList.toggle("offline", status!=="available");
   }
 
   // ── تبديل التابز ──
   window.switchTab = function(tab) {
     ["rides","mine","history"].forEach(t => {
-      document.getElementById(`tab-${t}`).style.display  = t === tab ? "block" : "none";
-      document.getElementById(`tab${capitalize(t)}`).classList.toggle("active", t === tab);
+      document.getElementById(`tab-${t}`).style.display = t===tab?"block":"none";
+      document.getElementById(`tab${t.charAt(0).toUpperCase()+t.slice(1)}`).classList.toggle("active",t===tab);
     });
-    if (tab === "history") loadHistory();
+    if (tab==="history") loadHistory();
   };
 
-  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-  // ── الطلبات الجديدة (real-time) ──
+  // ── الطلبات الجديدة مع إشعار ──
   function startLiveRides() {
     if (unsubPending) unsubPending();
-    const q = query(collection(db, "rides"), where("status", "==", "pending"));
+    const q = query(collection(db,"rides"), where("status","==","pending"));
     unsubPending = onSnapshot(q, (snap) => {
       const list = document.getElementById("ridesList");
+
+      // إشعار طلب جديد
+      if (prevRideCount > 0 && snap.size > prevRideCount) {
+        showAlert();
+        playSound();
+      }
+      prevRideCount = snap.size;
+
       if (snap.empty) {
-        list.innerHTML = `<div class="empty"><span class="empty-icon">✅</span>لا توجد طلبات جديدة حالياً</div>`;
+        list.innerHTML=`<div class="empty"><span class="empty-icon">✅</span>لا توجد طلبات جديدة</div>`;
         return;
       }
-      list.innerHTML = "";
+      list.innerHTML="";
       snap.forEach(d => {
         const r = d.data();
-        const mapLink = r.lat ? `https://maps.google.com/?q=${r.lat},${r.lng}` : null;
+        const mapLink = r.lat?`https://maps.google.com/?q=${r.lat},${r.lng}`:null;
         list.innerHTML += `
           <div class="ride-card">
             <div class="ride-header">
               <div>
-                <div class="ride-name">👤 ${r.name || "-"}</div>
-                <div class="ride-phone">📞 ${r.phone || "-"}</div>
+                <div class="ride-name">👤 ${r.name||"-"}</div>
+                <div class="ride-phone">📞 ${r.phone||"غير متوفر"}</div>
               </div>
-              <div class="ride-price-badge">${r.price || 0} أوقية</div>
+              <div class="ride-price-badge">${r.price||0} أوقية</div>
             </div>
             <div class="ride-details">
-              <div class="ride-detail">📍 <strong>من:</strong> ${r.from || "-"}</div>
-              <div class="ride-detail">🏥 <strong>إلى:</strong> ${r.to || "-"}</div>
-              <div class="ride-detail">📏 <strong>المسافة:</strong> ${r.distance ? r.distance.toFixed(1) + " كم" : "-"}</div>
-              ${mapLink ? `<div class="ride-detail">🗺️ <a href="${mapLink}" target="_blank" style="color:var(--accent);font-weight:700;">عرض الموقع على الخريطة</a></div>` : ""}
+              <div class="ride-detail">📍 <strong>من:</strong> ${r.from||"-"}</div>
+              <div class="ride-detail">🏥 <strong>إلى:</strong> ${r.to||"-"}</div>
+              <div class="ride-detail">📏 <strong>المسافة:</strong> ${r.distance?r.distance.toFixed(1)+" كم":"-"}</div>
+              ${mapLink?`<div class="ride-detail">🗺️ <a href="${mapLink}" target="_blank" style="color:var(--accent);font-weight:700;">عرض الموقع</a></div>`:""}
             </div>
             <div class="ride-actions">
-              <button class="btn-accept" onclick="acceptRide('${d.id}')">✅ قبول الطلب</button>
-              <button class="btn-reject" onclick="rejectRide('${d.id}')">✗ رفض</button>
+              <button class="btn-accept" onclick="acceptRide('${d.id}','${r.phone||""}')">✅ قبول</button>
+              ${r.phone?`<a class="btn-call" href="tel:${r.phone}">📞</a>`:""}
+              <button class="btn-reject" onclick="rejectRide('${d.id}')">✗</button>
             </div>
           </div>`;
       });
     });
   }
 
-  // ── طلباتي المقبولة (real-time) ──
+  // ── طلباتي المقبولة ──
   function startMyRides() {
     if (unsubMine) unsubMine();
-    const q = query(collection(db, "rides"),
-      where("status", "==", "accepted"),
-      where("driver_phone", "==", currentDriverPhone)
+    const q = query(collection(db,"rides"),
+      where("status","==","accepted"),
+      where("driver_phone","==",currentDriverPhone)
     );
     unsubMine = onSnapshot(q, (snap) => {
       const list = document.getElementById("myRidesList");
       if (snap.empty) {
-        list.innerHTML = `<div class="empty"><span class="empty-icon">🚗</span>لا توجد طلبات مقبولة حالياً</div>`;
+        list.innerHTML=`<div class="empty"><span class="empty-icon">🚗</span>لا توجد طلبات مقبولة</div>`;
         return;
       }
-      list.innerHTML = "";
+      list.innerHTML="";
       snap.forEach(d => {
         const r = d.data();
-        const commission = Math.round((r.price || 0) * COMMISSION);
-        const profit     = (r.price || 0) - commission;
+        const commission = Math.round((r.price||0)*COMMISSION);
+        const profit     = (r.price||0)-commission;
         list.innerHTML += `
           <div class="ride-card" style="border-right-color:#1976d2">
             <div class="ride-header">
               <div>
-                <div class="ride-name">👤 ${r.name || "-"}</div>
-                <div class="ride-phone">📞 ${r.phone || "-"}</div>
+                <div class="ride-name">👤 ${r.name||"-"}</div>
+                <div class="ride-phone">📞 ${r.phone||"-"}</div>
               </div>
-              <div class="ride-price-badge" style="background:linear-gradient(135deg,#1565c0,#1976d2)">${r.price || 0} أوقية</div>
+              <div class="ride-price-badge" style="background:linear-gradient(135deg,#1565c0,#1976d2)">${r.price||0} أوقية</div>
             </div>
             <div class="ride-details">
-              <div class="ride-detail">📍 <strong>من:</strong> ${r.from || "-"}</div>
-              <div class="ride-detail">🏥 <strong>إلى:</strong> ${r.to || "-"}</div>
-              <div class="ride-detail">💰 <strong>ربحك:</strong> ${profit} أوقية (بعد العمولة ${commission})</div>
+              <div class="ride-detail">📍 <strong>من:</strong> ${r.from||"-"}</div>
+              <div class="ride-detail">🏥 <strong>إلى:</strong> ${r.to||"-"}</div>
+              <div class="ride-detail">💰 <strong>ربحك:</strong> ${profit} أوقية</div>
             </div>
-            <button class="btn-finish" onclick="finishRide('${d.id}', ${r.price || 0})">✅ إنهاء الرحلة</button>
+            <div class="ride-actions">
+              ${r.phone?`<a class="btn-call" href="tel:${r.phone}" style="flex:1;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;">📞 اتصل بالزبون</a>`:""}
+            </div>
+            <button class="btn-finish" onclick="finishRide('${d.id}',${r.price||0})">✅ إنهاء الرحلة</button>
           </div>`;
       });
     });
   }
 
-  // ── قبول طلب ──
-  window.acceptRide = async function(rideId) {
+  // ── قبول طلب + إشعار Telegram للزبون ──
+  window.acceptRide = async function(rideId, clientPhone) {
     try {
-      await updateDoc(doc(db, "rides", rideId), {
+      await updateDoc(doc(db,"rides",rideId), {
         status: "accepted",
-        driver_phone: currentDriverPhone,
-        driver_name:  currentDriverName,
-        driver_doc_id: currentDriverDocId,
-        acceptedAt: new Date().toISOString()
+        driver_phone:   currentDriverPhone,
+        driver_name:    currentDriverName,
+        driver_doc_id:  currentDriverDocId,
+        acceptedAt:     new Date().toISOString()
       });
-    } catch(e) { alert("❌ حدث خطأ أثناء قبول الطلب"); }
+
+      // إشعار Telegram للأدمين
+      await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ chat_id: TG_CHAT,
+          text: `✅ طلب قُبل!\n🚗 السائق: ${currentDriverName}\n📞 ${currentDriverPhone}`
+        })
+      });
+
+      // انتقل لتاب طلباتي
+      switchTab('mine');
+
+    } catch { alert("❌ حدث خطأ أثناء قبول الطلب"); }
   };
 
-  // ── رفض طلب (تجاهله فقط، لا يُحذف) ──
+  // ── رفض طلب ──
   window.rejectRide = async function(rideId) {
-    // نضيف رقم السائق لقائمة المرفوضين حتى لا يظهر له مجدداً
-    const rideRef = doc(db, "rides", rideId);
-    const rideSnap = await getDoc(rideRef);
-    const rejected = rideSnap.data().rejectedBy || [];
-    await updateDoc(rideRef, { rejectedBy: [...rejected, currentDriverPhone] });
+    try {
+      const rideRef  = doc(db,"rides",rideId);
+      const rideSnap = await getDoc(rideRef);
+      const rejected = rideSnap.data().rejectedBy||[];
+      await updateDoc(rideRef, { rejectedBy:[...rejected, currentDriverPhone] });
+    } catch {}
   };
 
-  // ── إنهاء رحلة وتحديث الرصيد ──
+  // ── إنهاء رحلة ──
   window.finishRide = async function(rideId, price) {
-    const commission = Math.round(price * COMMISSION);
-    const profit     = price - commission;
+    const commission = Math.round(price*COMMISSION);
+    const profit     = price-commission;
     try {
-      await updateDoc(doc(db, "rides", rideId), {
-        status: "done",
-        finishedAt: new Date().toISOString()
-      });
-      // تحديث رصيد السائق
-      const newBalance = currentBalance + profit;
-      await updateDoc(doc(db, "drivers", currentDriverDocId), { balance: newBalance });
+      await updateDoc(doc(db,"rides",rideId), { status:"done", finishedAt:new Date().toISOString() });
+      const newBalance = currentBalance+profit;
+      await updateDoc(doc(db,"drivers",currentDriverDocId), { balance:newBalance });
       currentBalance = newBalance;
-      document.getElementById("balanceAmount").innerHTML = `${newBalance} <span style="font-size:18px">أوقية</span>`;
-    } catch(e) { alert("❌ حدث خطأ أثناء إنهاء الرحلة"); }
+      document.getElementById("balanceAmount").innerHTML=`${newBalance} <span style="font-size:18px">أوقية</span>`;
+
+      await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ chat_id: TG_CHAT,
+          text:`🏁 رحلة مكتملة!\n🚗 ${currentDriverName}\n💰 السعر: ${price} | ربح: ${profit} | عمولة: ${commission}`
+        })
+      });
+    } catch { alert("❌ حدث خطأ"); }
   };
 
   // ── السجل ──
   async function loadHistory() {
     const historyList = document.getElementById("historyList");
-    historyList.innerHTML = `<div class="empty"><span class="loading-spin">⏳</span> جارٍ التحميل...</div>`;
-
-    const q    = query(collection(db, "rides"),
-      where("driver_phone", "==", currentDriverPhone),
-      where("status", "==", "done")
+    historyList.innerHTML=`<div class="empty"><span class="spin">⏳</span> جارٍ التحميل...</div>`;
+    const q    = query(collection(db,"rides"),
+      where("driver_phone","==",currentDriverPhone),
+      where("status","==","done")
     );
     const snap = await getDocs(q);
-
     if (snap.empty) {
-      historyList.innerHTML = `<div class="empty"><span class="empty-icon">📋</span>لا توجد رحلات منتهية</div>`;
-      document.getElementById("statTotal").innerText      = 0;
-      document.getElementById("statEarned").innerText     = 0;
-      document.getElementById("statCommission").innerText = 0;
+      historyList.innerHTML=`<div class="empty"><span class="empty-icon">📋</span>لا توجد رحلات</div>`;
+      document.getElementById("statTotal").innerText=0;
+      document.getElementById("statEarned").innerText=0;
+      document.getElementById("statCommission").innerText=0;
       return;
     }
-
-    let total = 0, earned = 0, commission = 0;
-    const rides = [];
-    snap.forEach(d => rides.push(d.data()));
-    rides.sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
-
-    historyList.innerHTML = "";
-    rides.forEach(r => {
-      const price  = r.price || 0;
-      const c      = Math.round(price * COMMISSION);
-      const e      = price - c;
-      total++; earned += e; commission += c;
-
-      const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString("ar-EG") : "-";
-      historyList.innerHTML += `
+    let total=0,earned=0,commission=0;
+    const rides=[];
+    snap.forEach(d=>rides.push(d.data()));
+    rides.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+    historyList.innerHTML="";
+    rides.forEach(r=>{
+      const price=r.price||0,c=Math.round(price*COMMISSION),e=price-c;
+      total++;earned+=e;commission+=c;
+      const date=r.createdAt?new Date(r.createdAt).toLocaleDateString("ar-EG"):"-";
+      historyList.innerHTML+=`
         <div class="history-card">
           <div class="history-header">
-            <span class="history-name">👤 ${r.name || "-"}</span>
+            <span class="history-name">👤 ${r.name||"-"}</span>
             <span class="history-date">${date}</span>
           </div>
-          <div class="history-route">
-            📍 ${r.from || "-"} &rarr; 🏥 ${r.to || "-"}
-          </div>
+          <div style="font-size:13px;color:var(--text-light)">📍 ${r.from||"-"} ← 🏥 ${r.to||"-"}</div>
           <div class="history-footer">
             <span class="profit-text">ربحك: ${e} أوقية</span>
             <span class="commission-text">عمولة: ${c} أوقية</span>
           </div>
         </div>`;
     });
+    document.getElementById("statTotal").innerText=total;
+    document.getElementById("statEarned").innerText=earned;
+    document.getElementById("statCommission").innerText=commission;
+  }
 
-    document.getElementById("statTotal").innerText      = total;
-    document.getElementById("statEarned").innerText     = earned;
-    document.getElementById("statCommission").innerText = commission;
+  // ── إشعار صوتي وبصري ──
+  function showAlert() {
+    const alert = document.getElementById("newRideAlert");
+    alert.style.display="block";
+    setTimeout(()=>{ alert.style.display="none"; },4000);
+  }
+
+  function playSound() {
+    try {
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain= ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(660, ctx.currentTime+0.1);
+      osc.frequency.setValueAtTime(880, ctx.currentTime+0.2);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.4);
+    } catch {}
   }
 
   // ── تسجيل الخروج ──
   document.getElementById("logoutBtn").onclick = async () => {
     if (unsubPending) unsubPending();
     if (unsubMine)    unsubMine();
+    if (locationInterval) clearInterval(locationInterval);
     await signOut(auth);
   };
 </script>
-
 </body>
 </html>
+
